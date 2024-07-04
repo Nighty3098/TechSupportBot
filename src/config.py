@@ -15,6 +15,7 @@ log_file = home_dir + "/logs/TechSupport.log"
 data = home_dir + "/TechSupport.db"
 
 DEVS = ["1660218648"]
+CHANNEL = "-1002237746780"
 
 bot = Bot(TOKEN)
 dp = Dispatcher()
