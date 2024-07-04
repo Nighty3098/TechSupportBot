@@ -11,7 +11,7 @@ IDEA_TEXT = """
 """
 
 BUG_TEXT = """
-🍁 Now specify what error you encountered. If necessary, you can attach screenshots of the error. Our team will fix this error if possible and contact you if necessary.
+🍁 Now specify what error you encountered. If necessary, you can attach screenshots of the error (do not send files). Our team will fix this error if possible and contact you if necessary.
 """
 
 DONE_TEXT = """
