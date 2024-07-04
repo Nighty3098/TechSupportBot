@@ -65,11 +65,11 @@ async def IdeaUserMessage(message: Message, state: FSMContext) -> None:
     try:
         username = message.from_user.username
 
-        for dev_id in DEVS:
-            try:
-                await message.forward(dev_id)
-            except Exception as e:
-                logging.error(f"Error forwarding message to developer {dev_id}: {e}")
+        try:
+            await message.forward(CHANNEL)
+        except Exception as e:
+            logging.error(f"Error forwarding message to {CHANNEL}: {e}")
+    
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
@@ -80,11 +80,10 @@ async def BugUserMessage(message: types.Message, state: FSMContext) -> None:
     try:
         username = message.from_user.username
 
-        for dev_id in DEVS:
-            try:
-                await message.forward(dev_id)
-            except Exception as e:
-                logging.error(f"Error forwarding message to developer {dev_id}: {e}")
+        try:
+            await message.forward(CHANNEL)
+        except Exception as e:
+            logging.error(f"Error forwarding message to {CHANNEL}: {e}")
 
     except Exception as err:
         logger.error(f"{err}")
