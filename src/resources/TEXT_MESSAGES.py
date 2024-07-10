@@ -1,9 +1,9 @@
 HELLO_MESSAGE = """
-🧋 Hi! This is the DXS GROUP tech support bot.
+🍀 Hi! This is the DXS GROUP tech support bot. 🍀
 
 If you have found bugs and errors in our programs, or you have suggestions for the development of the project, you can send information to our team using the bot.
 
-Select the desired item:
+✅ Select the desired item ✅:
 """
 
 IDEA_TEXT = """
@@ -16,6 +16,12 @@ BUG_TEXT = """
 
 DONE_TEXT = """
 🍀 Your request has been successfully sent to the team and will be corrected shortly. If we have any questions, you will be contacted by our administration (@Night3098) 🍀
+"""
 
-You can return to the start menu by pressing /start
+DEVS_TEXT = """
+💬 Contacts of main developer :
+
+ 🔴 @Night3098
+ 🔴 https://discord.gg/#9707
+ 🔴 https://www.reddit.com/user/DEVELOPER0x31/
 """
