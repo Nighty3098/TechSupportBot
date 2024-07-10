@@ -24,7 +24,7 @@ from StatesGroup import *
 @dp.message(CommandStart())
 async def main_menu(message: Message) -> None:
     try:
-        global user_id
+        global user_id, message_id
         user_id = str(message.from_user.id)
         chat_id = message.chat.id
         member = await bot.get_chat_member(chat_id, user_id)
@@ -34,6 +34,8 @@ async def main_menu(message: Message) -> None:
         
         photo = FSInputFile(image_path)
         await message.answer_photo(photo, caption=HELLO_MESSAGE, reply_markup=await main_kb())
+        
+        logger.debug(f"{user_id} - main menu")
 
     except Exception as err:
         logger.error(f"{err}")
@@ -43,7 +45,13 @@ async def main_menu(message: Message) -> None:
 async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
     try:
         await state.set_state(GetIdea.wait_for_message)
-        await callback.message.answer(IDEA_TEXT)
+
+        logger.debug(f"{user_id} - idea suggest")
+
+        if callback.message.text:
+            await callback.message.edit_text(IDEA_TEXT)
+        else:
+            await callback.message.answer(IDEA_TEXT)
 
     except Exception as err:
         logger.error(f"{err}")
@@ -53,7 +61,13 @@ async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
 async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
     try:
         await state.set_state(GetBug.wait_for_message)
-        await callback.message.answer(BUG_TEXT)
+        
+        logger.debug(f"{user_id} - bug report")
+
+        if callback.message.text:
+            await callback.message.edit_text(BUG_TEXT)
+        else:
+            await callback.message.answer(BUG_TEXT)
 
     except Exception as err:
         logger.error(f"{err}")
@@ -64,11 +78,15 @@ async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
 async def IdeaUserMessage(message: Message, state: FSMContext) -> None:
     try:
         username = message.from_user.username
+        logger.debug(f"Idea suggest from {username}: {message.text}")
 
         try:
+            await bot.send_message(CHANNEL, f"🍀 IDEA 🍀\nSuggest from {username}")
             await message.forward(CHANNEL)
+
+            await message.answer(DONE_TEXT, reply_markup=await back_btn())
         except Exception as e:
-            logging.error(f"Error forwarding message to {CHANNEL}: {e}")
+            logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
     
     except Exception as err:
         logger.error(f"{err}")
@@ -79,12 +97,34 @@ async def IdeaUserMessage(message: Message, state: FSMContext) -> None:
 async def BugUserMessage(message: types.Message, state: FSMContext) -> None:
     try:
         username = message.from_user.username
+        logger.debug(f"Bug report from {username}: {message.text}")
 
         try:
+            await bot.send_message(CHANNEL, f"🔴 BUG 🔴\nReport from {username}")
             await message.forward(CHANNEL)
-        except Exception as e:
-            logging.error(f"Error forwarding message to {CHANNEL}: {e}")
 
+            await message.answer(DONE_TEXT, reply_markup=await back_btn())
+        except Exception as e:
+            logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
+
+    except Exception as err:
+        logger.error(f"{err}")
+        await send_log_to_dev()
+
+@dp.callback_query(F.data == "Back")
+async def BackToStartMenu(callback: types.CallbackQuery):
+    try:
+        await main_menu(callback.message)
+    except Exception as err:
+        logger.error(f"{err}")
+        await send_log_to_dev()
+
+@dp.callback_query(F.data == "Contacts")
+async def Contacts(callback: types.CallbackQuery):
+    try:
+        logger.debug(f"{user_id} - contacts")
+
+        await callback.message.answer(DEVS_TEXT, reply_markup=await back_btn(), disable_web_page_preview=True)
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
