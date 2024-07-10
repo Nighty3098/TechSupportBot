@@ -19,6 +19,7 @@ from config import *
 from resources.TEXT_MESSAGES import *
 from send_logs import *
 from kb_builder import *
+from send_data import *
 from StatesGroup import *
 
 @dp.message(CommandStart())
@@ -75,35 +76,29 @@ async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
 
 
 @dp.message(GetIdea.wait_for_message)
-async def IdeaUserMessage(message: Message, state: FSMContext) -> None:
+async def IdeaUserMessage(message: Message, state: FSMContext):
     try:
         username = message.from_user.username
         logger.debug(f"Idea suggest from {username}: {message.text}")
 
         try:
-            await bot.send_message(CHANNEL, f"🍀 IDEA 🍀\nSuggest from {username}")
-            await message.forward(CHANNEL)
-
-            await message.answer(DONE_TEXT, reply_markup=await back_btn())
+            await send_messages(message, username, "🍀 IDEA 🍀")
         except Exception as e:
             logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
-    
+
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
 
 
 @dp.message(GetBug.wait_for_message)
-async def BugUserMessage(message: types.Message, state: FSMContext) -> None:
+async def BugUserMessage(message: types.Message, state: FSMContext):
     try:
         username = message.from_user.username
         logger.debug(f"Bug report from {username}: {message.text}")
 
         try:
-            await bot.send_message(CHANNEL, f"🔴 BUG 🔴\nReport from {username}")
-            await message.forward(CHANNEL)
-
-            await message.answer(DONE_TEXT, reply_markup=await back_btn())
+            await send_messages(message, username, "❌ BUG ❌")
         except Exception as e:
             logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
 
