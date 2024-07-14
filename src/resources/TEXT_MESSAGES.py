@@ -16,6 +16,8 @@ BUG_TEXT = """
 
 DONE_TEXT = """
 🍀 Your request has been successfully sent to the team and will be corrected shortly. If we have any questions, you will be contacted by our administration (@Night3098) 🍀
+
+You can return to the start menu by pressing /start
 """
 
 DEVS_TEXT = """
@@ -24,4 +26,20 @@ DEVS_TEXT = """
  🔴 @Night3098
  🔴 https://discord.gg/#9707
  🔴 https://www.reddit.com/user/DEVELOPER0x31/
+"""
+
+OUR_PRODUCTS_TEXT = """
+📁 DXS GROUP products 📁 :
+
+ 🔴 https://github.com/DXS-GROUP/CodeKeeper
+    🍁 Project manager for developers.
+
+ 🔴 https://github.com/DXS-GROUP/TGSB 
+    👻 SMS bomber. TG bot service written in python and aiogram
+
+ 🔴 https://github.com/DXS-GROUP/FileEncrypt 
+    🍀 A program to encrypt and decrypt files with a user-defined password
+
+ 🔴 https://github.com/DXS-GROUP/FinanceTrackerBot
+    🔥 Telegram bot for tracking finances
 """

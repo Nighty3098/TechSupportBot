@@ -123,3 +123,18 @@ async def Contacts(callback: types.CallbackQuery):
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
+
+
+@dp.callback_query(F.data == "OurProducts")
+async def OurProducts(callback: types.CallbackQuery):
+    try:
+        logger.debug(f"{user_id} - our products")
+
+        header_image_path = "resources/DXS_GROUP.png"
+        photo = FSInputFile(header_image_path)
+
+        await callback.message.answer_photo(photo, caption=OUR_PRODUCTS_TEXT, reply_markup=await back_btn())
+
+    except Exception as err:
+        logger.error(f"{err}")
+        await send_log_to_dev()
