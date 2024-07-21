@@ -138,3 +138,13 @@ async def OurProducts(callback: types.CallbackQuery):
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
+
+@dp.callback_query(F.data == "SupportMe")
+async def SupportMe(callback: types.CallbackQuery):
+    try:
+        logger.debug(f"{user_id} - support me")
+
+        await callback.message.answer(SUPPORT_TEXT, reply_markup=await back_btn())
+    except Exception as err:
+        logger.error(f"{err}")
+        await send_log_to_dev()
