@@ -43,3 +43,10 @@ OUR_PRODUCTS_TEXT = """
  🔴 https://github.com/DXS-GROUP/FinanceTrackerBot
     🔥 Telegram bot for tracking finances
 """
+
+SUPPORT_TEXT = """
+🏦 You can support our project through ton: 🏦
+
+sPDO0QqkNtvy5CKSvYWEsZS6l7vzaytV36oYM0SNhKt
+
+"""

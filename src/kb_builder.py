@@ -18,6 +18,7 @@ async def main_kb():
         builder.add(types.InlineKeyboardButton(text="🚀 Suggest an idea 🚀", callback_data="SuggestIdea"))
         builder.add(types.InlineKeyboardButton(text="💬 Contacts 💬", callback_data="Contacts"))
         builder.add(types.InlineKeyboardButton(text="📁 Our products 📁", callback_data="OurProducts"))
+        builder.add(types.InlineKeyboardButton(text="🏦 Support Me 🏦", callback_data="SupportMe"))
         builder.add(types.InlineKeyboardButton(text="👻 Join our disord server 👻", url="https://discord.gg/tnHSEc2cZv"))
 
         builder.adjust(2)
