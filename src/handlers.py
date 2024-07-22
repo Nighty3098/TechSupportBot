@@ -49,7 +49,6 @@ async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
 
         logger.debug(f"{callback.message.chat.id} - idea suggest")
 
-        # Получаем идентификатор сообщения из объекта сообщения
         message_id = callback.message.message_id
 
         await bot.edit_message_caption(chat_id=callback.message.chat.id, message_id=message_id, caption=IDEA_TEXT, reply_markup=await back_btn())
@@ -65,7 +64,6 @@ async def GetUserBug(callback: types.CallbackQuery, state: FSMContext):
 
         logger.debug(f"{callback.message.chat.id} - bug report")
 
-        # Получаем идентификатор сообщения из объекта сообщения
         message_id = callback.message.message_id
 
         await bot.edit_message_caption(chat_id=callback.message.chat.id, message_id=message_id, caption=BUG_TEXT, reply_markup=await back_btn())
@@ -110,7 +108,6 @@ async def BackToStartMenu(callback: types.CallbackQuery):
     try:
         logger.debug(f"{callback.message.chat.id} - back button")
 
-        # Получаем идентификатор сообщения из объекта сообщения
         message_id = callback.message.message_id
 
         await bot.edit_message_caption(chat_id=callback.message.chat.id, message_id=message_id, caption=HELLO_MESSAGE, reply_markup=await main_kb())
@@ -135,10 +132,9 @@ async def OurProducts(callback: types.CallbackQuery):
     try:
         logger.debug(f"{user_id} - our products")
 
-        header_image_path = "resources/DXS_GROUP.png"
-        photo = FSInputFile(header_image_path)
+        message_id = callback.message.message_id
 
-        await callback.message.answer_photo(photo, caption=OUR_PRODUCTS_TEXT, reply_markup=await back_btn())
+        await bot.edit_message_caption(chat_id=callback.message.chat.id, message_id=message_id, caption=OUR_PRODUCTS_TEXT, reply_markup=await back_btn())
 
     except Exception as err:
         logger.error(f"{err}")

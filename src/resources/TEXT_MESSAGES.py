@@ -47,6 +47,6 @@ OUR_PRODUCTS_TEXT = """
 SUPPORT_TEXT = """
 🏦 You can support our project through ton: 🏦
 
-sPDO0QqkNtvy5CKSvYWEsZS6l7vzaytV36oYM0SNhKt
+UQCF-sPDO0QqkNtvy5CKSvYWEsZS6l7vzaytV36oYM0SNhKt
 
 """
