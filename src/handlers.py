@@ -32,10 +32,10 @@ async def main_menu(message: Message) -> None:
         username = member.user.username
 
         image_path = 'resources/TechSupport.png'
-        
+
         photo = FSInputFile(image_path)
-        await message.answer_photo(photo, caption=HELLO_MESSAGE, reply_markup=await main_kb())
-        
+        message_id = await message.answer_photo(photo, caption=HELLO_MESSAGE, reply_markup=await main_kb())
+
         logger.debug(f"{user_id} - main menu")
 
     except Exception as err:
@@ -47,33 +47,32 @@ async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
     try:
         await state.set_state(GetIdea.wait_for_message)
 
-        logger.debug(f"{user_id} - idea suggest")
+        logger.debug(f"{callback.message.chat.id} - idea suggest")
 
-        if callback.message.text:
-            await callback.message.edit_text(IDEA_TEXT)
-        else:
-            await callback.message.answer(IDEA_TEXT)
+        # Получаем идентификатор сообщения из объекта сообщения
+        message_id = callback.message.message_id
+
+        await bot.edit_message_caption(chat_id=callback.message.chat.id, message_id=message_id, caption=IDEA_TEXT, reply_markup=await back_btn())
 
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
 
 @dp.callback_query(F.data == "BugReport")
-async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
+async def GetUserBug(callback: types.CallbackQuery, state: FSMContext):
     try:
         await state.set_state(GetBug.wait_for_message)
-        
-        logger.debug(f"{user_id} - bug report")
 
-        if callback.message.text:
-            await callback.message.edit_text(BUG_TEXT)
-        else:
-            await callback.message.answer(BUG_TEXT)
+        logger.debug(f"{callback.message.chat.id} - bug report")
+
+        # Получаем идентификатор сообщения из объекта сообщения
+        message_id = callback.message.message_id
+
+        await bot.edit_message_caption(chat_id=callback.message.chat.id, message_id=message_id, caption=BUG_TEXT, reply_markup=await back_btn())
 
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
-
 
 @dp.message(GetIdea.wait_for_message)
 async def IdeaUserMessage(message: Message, state: FSMContext):
@@ -109,7 +108,13 @@ async def BugUserMessage(message: types.Message, state: FSMContext):
 @dp.callback_query(F.data == "Back")
 async def BackToStartMenu(callback: types.CallbackQuery):
     try:
-        await main_menu(callback.message)
+        logger.debug(f"{callback.message.chat.id} - back button")
+
+        # Получаем идентификатор сообщения из объекта сообщения
+        message_id = callback.message.message_id
+
+        await bot.edit_message_caption(chat_id=callback.message.chat.id, message_id=message_id, caption=HELLO_MESSAGE, reply_markup=await main_kb())
+
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
