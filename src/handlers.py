@@ -121,7 +121,9 @@ async def Contacts(callback: types.CallbackQuery):
     try:
         logger.debug(f"{user_id} - contacts")
 
-        await callback.message.answer(DEVS_TEXT, reply_markup=await back_btn(), disable_web_page_preview=True)
+        message_id = callback.message.message_id
+
+        await bot.edit_message_caption(chat_id=callback.message.chat.id, message_id=message_id, caption=DEVS_TEXT, reply_markup=await back_btn())
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
