@@ -4,7 +4,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram import types
 
 
-from config import *
+from config import log_file, data, DEVS, CHANNEL, bot, dp, logger
 
 async def main_kb():
     try:
