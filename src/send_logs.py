@@ -3,24 +3,17 @@ import json
 import logging
 import re
 import time
-
 import requests
-from aiogram import *
-from aiogram.enums import *
-from aiogram.filters import *
-from aiogram.types import *
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.utils.markdown import *
-from requests.models import *
 
-from config import *
+from aiogram.types import Message
+from aiogram.types import FSInputFile
+from aiogram.enums.chat_action import ChatAction
+
+from config import bot, logger, log_file, DEVS
 
 async def send_log_to_dev():
     try:
-        with open(log_file, "r") as file:
-            users_ids = json.load(file)
-
-        for DEV in users_ids["developer"]:
+        for DEV in DEVS:
             file = FSInputFile(log_file, filename="TechSupport.log")
             await bot.send_chat_action(chat_id=DEV, action=ChatAction.UPLOAD_DOCUMENT)
             await bot.send_document(chat_id=DEV, document=file, allow_sending_without_reply=True)
