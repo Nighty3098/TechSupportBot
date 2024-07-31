@@ -1,4 +1,3 @@
-from aiogram import *
 from aiogram.fsm.state import State, StatesGroup
 
 class GetIdea(StatesGroup):

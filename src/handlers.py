@@ -2,25 +2,19 @@ import asyncio
 import json
 import logging
 
-from aiogram import *
-from aiogram.enums import *
-from aiogram.filters import *
-from aiogram.filters import callback_data
-from aiogram.types import *
-from aiogram.types import message
+from aiogram import handlers, F, types
+from aiogram.types import Message
+from aiogram.filters import CommandStart, Filter
+from aiogram.types.input_file import InputFile
+from aiogram.types import FSInputFile
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.utils.markdown import *
-from aiogram.types.input_media_photo import *
-from aiogram.types import input_media_photo
 
-from config import *
-from resources.TEXT_MESSAGES import *
-from send_logs import *
-from kb_builder import *
-from send_data import *
-from StatesGroup import *
+from config import log_file, data, DEVS, CHANNEL, bot, dp, logger
+from resources.TEXT_MESSAGES import HELLO_MESSAGE, IDEA_TEXT, BUG_TEXT, DONE_TEXT, DEVS_TEXT, OUR_PRODUCTS_TEXT, SUPPORT_TEXT
+from send_logs import send_log_to_dev
+from kb_builder import main_kb, back_btn
+from send_data import send_messages
+from StatesGroup import GetIdea, GetBug
 
 @dp.message(CommandStart())
 async def main_menu(message: Message) -> None:
@@ -37,6 +31,12 @@ async def main_menu(message: Message) -> None:
         message_id = await message.answer_photo(photo, caption=HELLO_MESSAGE, reply_markup=await main_kb())
 
         logger.debug(f"{user_id} - main menu")
+
+        message_for_dev = "New user: @" + username
+
+        for DEV in DEVS:
+            await bot.send_message(chat_id=DEV, text=message_for_dev)
+        await send_log_to_dev()
 
     except Exception as err:
         logger.error(f"{err}")
@@ -147,7 +147,9 @@ async def SupportMe(callback: types.CallbackQuery):
     try:
         logger.debug(f"{user_id} - support me")
 
-        await callback.message.answer(SUPPORT_TEXT, reply_markup=await back_btn())
+        message_id = callback.message.message_id
+
+        await bot.edit_message_caption(chat_id=callback.message.chat.id, message_id=message_id, caption=SUPPORT_TEXT, reply_markup=await back_btn())
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
