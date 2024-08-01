@@ -11,8 +11,9 @@
 <br><br>
 
 <div align="center">
-    <img src="img1.png" width="40%" />
-    <img src="img2.png" width="40%" />
+    <img src="1.png" width="40%" />
+    <img src="2.png" width="40%" />
+    <img src="3.png" width="40%" />
 </div>
 
 <br><br>
@@ -32,5 +33,7 @@ SUPPORT_TOKEN="BOT TOKEN" python3 main.py
 <br>
 
 <div align="center">
-    <h3>In the config.py file, set the developer id and chat id. Add a bot to the chat and make it an admin</h3>
+
+> In the config.py file, set the developer id and chat id. Add a bot to the chat and make it an admin
+
 </div>
