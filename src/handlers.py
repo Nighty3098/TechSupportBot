@@ -104,7 +104,11 @@ async def IdeaUserMessage(message: Message, state: FSMContext):
 
             connection = await create_connection()
             await save_report_data(
-                connection=connection, username=username, message=message, label="SUGGESTION"
+                connection=connection,
+                username=username,
+                message=message,
+                label="SUGGESTION",
+                text_message=message.text,
             )
         except Exception as e:
             logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
@@ -125,7 +129,11 @@ async def BugUserMessage(message: types.Message, state: FSMContext):
 
             connection = await create_connection()
             await save_report_data(
-                connection=connection, username=username, message=message, label="BUG"
+                connection=connection,
+                username=username,
+                message=message,
+                label="BUG",
+                text_message=message.text,
             )
         except Exception as e:
             logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
