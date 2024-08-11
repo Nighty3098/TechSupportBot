@@ -12,7 +12,7 @@ async def main_kb():
         builder.add(types.InlineKeyboardButton(text="🔴 Bug report 🔴", callback_data="BugReport"))
         builder.add(types.InlineKeyboardButton(text="🚀 Suggest an idea 🚀", callback_data="SuggestIdea"))
         builder.add(types.InlineKeyboardButton(text="💬 Contacts 💬", callback_data="Contacts"))
-        builder.add(types.InlineKeyboardButton(text="📁 Our products 📁", callback_data="OurProducts"))
+        #builder.add(types.InlineKeyboardButton(text="📁 Our products 📁", callback_data="OurProducts"))
         builder.add(types.InlineKeyboardButton(text="🏦 Support Me 🏦", callback_data="SupportMe"))
 
         builder.adjust(2)

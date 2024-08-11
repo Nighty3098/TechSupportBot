@@ -1,12 +1,15 @@
 import asyncio
+import datetime
 import os
 import sqlite3
 
 from aiogram import types
 from aiogram.types import Message
-from config import data, home_dir, logger, bot
-from send_logs import send_log_to_dev
+
+from config import bot, data, home_dir, logger
 from db.check_data import get_data_url
+from send_logs import send_log_to_dev
+
 
 async def create_connection():
     """Creates connection to SQL DB"""
@@ -37,7 +40,8 @@ async def create_table(connection):
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT,
         message TEXT,
-        data TEXT
+        data TEXT,
+        date TEXT
         )
         """
         )
@@ -48,7 +52,8 @@ async def create_table(connection):
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT,
         message TEXT,
-        data TEXT
+        data TEXT,
+        date TEXT
         )
         """
         )
@@ -61,23 +66,27 @@ async def create_table(connection):
         logger.error(f"Error '{e}' while creating table")
 
 
-async def save_report_data(connection, username, message: types.Message, label):
+async def save_report_data(
+    connection, username, message: types.Message, label, text_message
+):
     """Saving reports to DB"""
     try:
         cursor = connection.cursor()
 
-        text_message = message.text or ""
         files = await get_data_url(message)
+
+        current_datetime = datetime.datetime.now()
+        responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
 
         if label == "BUG":
             cursor.execute(
-                "INSERT INTO bugs (username, message, data) VALUES (?, ?, ?)",
-                (username, text_message, files),
+                "INSERT INTO bugs (username, message, data, date) VALUES (?, ?, ?, ?)",
+                (username, text_message, files, responsdate),
             )
         elif label == "SUGGESTION":
             cursor.execute(
-                "INSERT INTO suggestions (username, message, data) VALUES (?, ?, ?)",
-                (username, text_message, files),
+                "INSERT INTO suggestions (username, message, data, date) VALUES (?, ?, ?, ?)",
+                (username, text_message, files, responsdate),
             )
         else:
             raise ValueError("Invalid label")
