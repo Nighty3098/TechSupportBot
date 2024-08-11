@@ -11,7 +11,7 @@ from config import *
 
 async def send_messages(message, username, status):
     try:
-        await bot.send_message(CHANNEL, f"\n\n{status}\n\nReport from @{username}\n\n")
+        # await bot.send_message(CHANNEL, f"\n\n{status}\n\nReport from @{username}\n\n")
         await message.forward(CHANNEL)
     
     except Exception as e:
