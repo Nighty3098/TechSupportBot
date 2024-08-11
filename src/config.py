@@ -9,11 +9,10 @@ from aiogram.dispatcher.dispatcher import Dispatcher
 """
 Only for linux or mac
 """
-home_dir = os.environ['HOME']
+home_dir = os.environ["HOME"]
 TOKEN = os.getenv("SUPPORT_TOKEN")
 log_file = home_dir + "/logs/TechSupport.log"
-data = home_dir + "/TechSupport.db"
-
+data = home_dir + "/TechSupport/TechSupport.db"
 
 """
 for windows:

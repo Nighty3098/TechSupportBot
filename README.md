@@ -25,7 +25,7 @@ git clone https://github.com/Nighty3098/TechSupportBot
 cd TechSupportBot
 python3 -m venv SupportBot
 source SupportBot/bin/activate
-pip3 install -r req.txt
+pip3 install -r requirements.txt
 cd src
 SUPPORT_TOKEN="BOT TOKEN" python3 main.py
 ```
