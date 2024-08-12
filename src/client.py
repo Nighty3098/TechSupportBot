@@ -78,7 +78,6 @@ async def IdeaUserMessage(message: Message, state: FSMContext):
                 user_id=str(message.from_user.id),
                 message=message,
                 label="SUGGESTION",
-                text_message=message.text,
             )
 
             await message.answer(DONE_TEXT)
@@ -106,7 +105,6 @@ async def BugUserMessage(message: types.Message, state: FSMContext):
                 user_id=str(message.from_user.id),
                 message=message,
                 label="BUG",
-                text_message=message.text,
             )
 
             await message.answer(DONE_TEXT)

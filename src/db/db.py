@@ -8,8 +8,9 @@ from aiogram.types import Message
 
 from config import bot, data, home_dir, logger
 from db.check_data import get_data_url
-from send_logs import send_log_to_dev
 from db.check_for_qsl_injection import is_sql_injection_attempt
+from send_logs import send_log_to_dev
+
 
 async def create_connection():
     """Creates connection to SQL DB"""
@@ -69,7 +70,7 @@ async def create_table(connection):
 
 
 async def save_report_data(
-    connection, username, user_id, message: types.Message, label, text_message
+    connection, username, user_id, message: types.Message, label
 ):
     """Saving reports to DB"""
     cursor = connection.cursor()
@@ -78,11 +79,13 @@ async def save_report_data(
 
     current_datetime = datetime.datetime.now()
     responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
-    
+
     if message.text:
         text_message = message.text if message.text else "No description provided."
     else:
-        text_message = message.caption if message.caption else "No description provided."
+        text_message = (
+            message.caption if message.caption else "No description provided."
+        )
 
     await is_sql_injection_attempt(text_message, username)
     if label == "BUG":
@@ -100,4 +103,3 @@ async def save_report_data(
 
     connection.commit()
     connection.close()
-
