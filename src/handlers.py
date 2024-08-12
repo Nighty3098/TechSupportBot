@@ -9,6 +9,7 @@ from aiogram.types import FSInputFile, Message
 from aiogram.types.input_file import InputFile
 
 from config import CHANNEL, DEVS, TOKEN, bot, data, dp, log_file, logger
+from db.check_for_qsl_injection import is_sql_injection_attempt
 from db.db import create_connection, create_table, save_report_data
 from kb_builder import back_btn, main_kb
 from resources.TEXT_MESSAGES import (BUG_TEXT, DEVS_TEXT, DONE_TEXT,
@@ -100,16 +101,20 @@ async def IdeaUserMessage(message: Message, state: FSMContext):
         logger.debug(f"Idea suggest from {username}: {message.text}")
 
         try:
-            await send_messages(message, username, "🍀 IDEA 🍀")
+            if await is_sql_injection_attempt(message.text, username):
+                pass
+            else:
+                await send_messages(message, username, "🍀 IDEA 🍀")
 
-            connection = await create_connection()
-            await save_report_data(
-                connection=connection,
-                username=username,
-                message=message,
-                label="SUGGESTION",
-                text_message=message.text,
-            )
+                connection = await create_connection()
+                await save_report_data(
+                    connection=connection,
+                    username=username,
+                    user_id=str(message.from_user.id),
+                    message=message,
+                    label="SUGGESTION",
+                    text_message=message.text,
+                )
         except Exception as e:
             logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
 
@@ -125,16 +130,21 @@ async def BugUserMessage(message: types.Message, state: FSMContext):
         logger.debug(f"Bug report from {username}: {message.text}")
 
         try:
-            await send_messages(message, username, "❌ BUG ❌")
+            if await is_sql_injection_attempt(message.text, username):
+                pass
+            else:
+                await send_messages(message, username, "❌ BUG ❌")
 
-            connection = await create_connection()
-            await save_report_data(
-                connection=connection,
-                username=username,
-                message=message,
-                label="BUG",
-                text_message=message.text,
-            )
+                connection = await create_connection()
+                await save_report_data(
+                    connection=connection,
+                    username=username,
+                    user_id=str(message.from_user.id),
+                    message=message,
+                    label="BUG",
+                    text_message=message.text,
+                )
+
         except Exception as e:
             logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
 
