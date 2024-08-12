@@ -1,10 +1,13 @@
-from aiogram.types import Message
-from aiogram import types
 import asyncio
 
-from config import logger, bot
+from aiogram import types
+from aiogram.types import Message
+
+from config import bot, logger
+
 
 async def get_data_url(message: types.Message):
+    """Checking the message for additional files"""
     files = ""
 
     try:
