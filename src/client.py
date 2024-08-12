@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import datetime
 
 from aiogram import F, handlers, types
 from aiogram.filters import CommandStart, Filter
@@ -9,7 +10,6 @@ from aiogram.types import FSInputFile, Message
 from aiogram.types.input_file import InputFile
 
 from config import CHANNEL, DEVS, TOKEN, bot, data, dp, log_file, logger
-from db.check_for_qsl_injection import is_sql_injection_attempt
 from db.db import create_connection, create_table, save_report_data
 from kb_builder import back_btn, main_kb
 from resources.TEXT_MESSAGES import (BUG_TEXT, DEVS_TEXT, DONE_TEXT,
@@ -69,7 +69,8 @@ async def IdeaUserMessage(message: Message, state: FSMContext):
         logger.debug(f"Idea suggest from {username}: {message.text}")
 
         try:
-            await send_messages(message, username, "🍀 IDEA 🍀")
+            current_datetime = datetime.datetime.now()
+            responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
 
             connection = await create_connection()
             await save_report_data(
@@ -79,6 +80,8 @@ async def IdeaUserMessage(message: Message, state: FSMContext):
                 message=message,
                 label="SUGGESTION",
             )
+
+            await send_messages(message, username, "IDEA", responsdate)
 
             await message.answer(DONE_TEXT)
         except Exception as e:
@@ -96,7 +99,8 @@ async def BugUserMessage(message: types.Message, state: FSMContext):
         logger.debug(f"Bug report from {username}: {message.text}")
 
         try:
-            await send_messages(message, username, "❌ BUG ❌")
+            current_datetime = datetime.datetime.now()
+            responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
 
             connection = await create_connection()
             await save_report_data(
@@ -107,14 +111,14 @@ async def BugUserMessage(message: types.Message, state: FSMContext):
                 label="BUG",
             )
 
+            await send_messages(message, username, "BUG", responsdate)
+
             await message.answer(DONE_TEXT)
         except Exception as e:
             logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
-
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
-
 
 @dp.callback_query(F.data == "Back")
 async def BackToStartMenu(callback: types.CallbackQuery):
