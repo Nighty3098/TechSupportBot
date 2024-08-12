@@ -8,20 +8,31 @@
 
 <h1 align="center">TechSupport Bot for DXS_GROUP</h1>
 
-<br><br>
+### Functional
 
-<div align="center">
-    <img src="1.png" width="30%" />
-    <img src="2.png" width="30%" />
-    <img src="3.png" width="30%" />
-    <img src="4.png" width="30%" />
-    <img src="5.png" width="30%" />
-    <img src="6.png" width="30%" />
-</div>
+- Menu items:
+    - sending bug report
+    - submit a development proposal
+    - contacts
+    - support the team
+    - order development
 
-<br><br>
+- User features:
+    - sending tickets
+    - receiving notifications about ticket status changes
+    - receiving notifications from the developer
 
-<h1 align="center">Installing</h1>
+- Opportunities for developer:
+    - tracking tickets in a separate chat room
+    - ticket status change
+    - sending a notification to the user
+
+
+> [!TIP]
+> All data and links to user attachments are stored in a sqlite database
+
+
+### Installing
 
 ```
 git clone https://github.com/Nighty3098/TechSupportBot
@@ -33,10 +44,17 @@ cd src
 SUPPORT_TOKEN="BOT TOKEN" python3 main.py
 ```
 
-<br>
-
-<div align="center">
-
+> [!IMPORTANT]
 > In the config.py file, set the developer id and chat id. Add a bot to the chat and make it an admin
 
+<details>
+<summary align="center">Imgs</summary>
+<div align="center">
+    <img src="1.png" width="40%" />
+    <img src="2.png" width="40%" />
+    <img src="3.png" width="40%" />
+    <img src="4.png" width="40%" />
+    <img src="5.png" width="40%" />
 </div>
+</details>
+<br><br>
