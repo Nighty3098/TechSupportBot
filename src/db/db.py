@@ -72,37 +72,32 @@ async def save_report_data(
     connection, username, user_id, message: types.Message, label, text_message
 ):
     """Saving reports to DB"""
-    try:
-        cursor = connection.cursor()
+    cursor = connection.cursor()
 
-        files = await get_data_url(message)
+    files = await get_data_url(message)
 
-        current_datetime = datetime.datetime.now()
-        responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
-        
-        if message.text:
-            text_message = message.text if message.text else "No description provided."
-        else:
-            text_message = message.caption if message.caption else "No description provided."
+    current_datetime = datetime.datetime.now()
+    responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
+    
+    if message.text:
+        text_message = message.text if message.text else "No description provided."
+    else:
+        text_message = message.caption if message.caption else "No description provided."
 
-        if await is_sql_injection_attempt(text_message, username):
-            pass
-        else:
-            if label == "BUG":
-                cursor.execute(
-                    "INSERT INTO bugs (username, user_id, message, data, date) VALUES (?, ?, ?, ?, ?)",
-                    (username, user_id, text_message, files, responsdate),
-                )
-            elif label == "SUGGESTION":
-                cursor.execute(
-                    "INSERT INTO suggestions (username, user_id, message, data, date) VALUES (?, ?, ?, ?, ?)",
-                    (username, user_id, text_message, files, responsdate),
-                )
-            else:
-                raise ValueError("Invalid label")
+    await is_sql_injection_attempt(text_message, username)
+    if label == "BUG":
+        cursor.execute(
+            "INSERT INTO bugs (username, user_id, message, data, date) VALUES (?, ?, ?, ?, ?)",
+            (username, user_id, text_message, files, responsdate),
+        )
+    elif label == "SUGGESTION":
+        cursor.execute(
+            "INSERT INTO suggestions (username, user_id, message, data, date) VALUES (?, ?, ?, ?, ?)",
+            (username, user_id, text_message, files, responsdate),
+        )
+    else:
+        raise ValueError("Invalid label")
 
-        connection.commit()
-        connection.close()
+    connection.commit()
+    connection.close()
 
-    except Exception as e:
-        logger.error(f"Error '{e}' while saving report data")

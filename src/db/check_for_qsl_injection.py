@@ -15,7 +15,6 @@ SQL_INJECTION_PATTERNS = [
     r";",  # Semicolon
 ]
 
-
 async def is_sql_injection_attempt(message_text, username):
     """Checks if the message is an SQL injection attempt."""
     for pattern in SQL_INJECTION_PATTERNS:
