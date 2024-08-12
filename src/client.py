@@ -110,7 +110,6 @@ async def BugUserMessage(message: types.Message, state: FSMContext):
             )
 
             await message.answer(DONE_TEXT)
-
         except Exception as e:
             logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
 
