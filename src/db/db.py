@@ -9,7 +9,7 @@ from aiogram.types import Message
 from config import bot, data, home_dir, logger
 from db.check_data import get_data_url
 from send_logs import send_log_to_dev
-
+from db.check_for_qsl_injection import is_sql_injection_attempt
 
 async def create_connection():
     """Creates connection to SQL DB"""
@@ -79,19 +79,27 @@ async def save_report_data(
 
         current_datetime = datetime.datetime.now()
         responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
-
-        if label == "BUG":
-            cursor.execute(
-                "INSERT INTO bugs (username, user_id, message, data, date) VALUES (?, ?, ?, ?, ?)",
-                (username, user_id, text_message, files, responsdate),
-            )
-        elif label == "SUGGESTION":
-            cursor.execute(
-                "INSERT INTO suggestions (username, user_id, message, data, date) VALUES (?, ?, ?, ?, ?)",
-                (username, user_id, text_message, files, responsdate),
-            )
+        
+        if message.text:
+            text_message = message.text if message.text else "No description provided."
         else:
-            raise ValueError("Invalid label")
+            text_message = message.caption if message.caption else "No description provided."
+
+        if await is_sql_injection_attempt(text_message, username):
+            pass
+        else:
+            if label == "BUG":
+                cursor.execute(
+                    "INSERT INTO bugs (username, user_id, message, data, date) VALUES (?, ?, ?, ?, ?)",
+                    (username, user_id, text_message, files, responsdate),
+                )
+            elif label == "SUGGESTION":
+                cursor.execute(
+                    "INSERT INTO suggestions (username, user_id, message, data, date) VALUES (?, ?, ?, ?, ?)",
+                    (username, user_id, text_message, files, responsdate),
+                )
+            else:
+                raise ValueError("Invalid label")
 
         connection.commit()
         connection.close()

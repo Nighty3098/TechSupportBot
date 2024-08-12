@@ -15,7 +15,7 @@ BUG_TEXT = """
 """
 
 DONE_TEXT = """
-🍀 Your request has been successfully sent to the team and will be corrected shortly. If we have any questions, you will be contacted by our administration (@Night3098) 🍀
+🍀 Your request has been successfully sent to the team and will be fixed soon. If we have any questions, you will be contacted by our administration (@Night3098) When your issue is fixed, you will be notified. The ticket will be automatically closed🍀.
 
 You can return to the start menu by pressing /start
 """
