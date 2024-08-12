@@ -43,7 +43,8 @@ async def create_table(connection):
             user_id TEXT,
             message TEXT,
             data TEXT,
-            date TEXT
+            date TEXT,
+            status TEXT
             )
             """
         )
@@ -56,7 +57,8 @@ async def create_table(connection):
             user_id TEXT,
             message TEXT,
             data TEXT,
-            date TEXT
+            date TEXT,
+            status TEXT
             )
             """
         )
@@ -70,7 +72,7 @@ async def create_table(connection):
 
 
 async def save_report_data(
-    connection, username, user_id, message: types.Message, label
+    connection, username: str, user_id: str, message: types.Message, label: str
 ):
     """Saving reports to DB"""
     cursor = connection.cursor()
@@ -90,16 +92,99 @@ async def save_report_data(
     await is_sql_injection_attempt(text_message, username)
     if label == "BUG":
         cursor.execute(
-            "INSERT INTO bugs (username, user_id, message, data, date) VALUES (?, ?, ?, ?, ?)",
-            (username, user_id, text_message, files, responsdate),
+            "INSERT INTO bugs (username, user_id, message, data, date, status) VALUES (?, ?, ?, ?, ?, ?)",
+            (username, user_id, text_message, files, responsdate, "Not started"),
         )
     elif label == "SUGGESTION":
         cursor.execute(
-            "INSERT INTO suggestions (username, user_id, message, data, date) VALUES (?, ?, ?, ?, ?)",
-            (username, user_id, text_message, files, responsdate),
+            "INSERT INTO suggestions (username, user_id, message, data, date, status) VALUES (?, ?, ?, ?, ?, ?)",
+            (username, user_id, text_message, files, responsdate, "Not started"),
         )
     else:
         raise ValueError("Invalid label")
 
     connection.commit()
     connection.close()
+
+async def get_id_by_message(connection, message_value: str, date: str, user_id: str, category: str):
+    cursor = connection.cursor()
+
+    table_name = {
+        "bug": "bugs",
+        "idea": "suggestions"
+    }.get(category)
+
+    if table_name is None:
+        logger.error(f"Invalid category: {category}")
+        return None
+
+    logger.debug(f"Getting id from {table_name} where message = '{message_value}', date = '{date}', user_id = '{user_id}'")
+
+    query = f"SELECT id FROM {table_name} WHERE message = ? AND date = ? AND user_id = ?"
+    
+    try:
+        cursor.execute(query, (message_value, date, user_id))
+        result = cursor.fetchone()
+        logger.debug(f"Query result: {result}")
+    except Exception as e:
+        logger.error(f"Error executing query: {e}")
+        await send_log_to_dev()
+        return None
+
+    return result[0] if result else None
+
+
+async def update_ticket_status(connection, ticket_id: int, new_status: str, category: str):
+    cursor = connection.cursor()
+
+    table_name = {
+        "bug": "bugs",
+        "idea": "suggestions"
+    }.get(category)
+
+    if table_name is None:
+        logger.error(f"Invalid category: {category}")
+        await send_log_to_dev()
+        return False
+
+    logger.debug(f"Updating status for {table_name} with id = '{ticket_id}' to '{new_status}'")
+
+    query = f"UPDATE {table_name} SET status = ? WHERE id = ?"
+    
+    try:
+        cursor.execute(query, (new_status, ticket_id))
+        connection.commit()
+        logger.debug(f"Updated status for {table_name} with id = '{ticket_id}' to '{new_status}'")
+    except Exception as e:
+        logger.error(f"Error updating ticket status: {e}")
+        await send_log_to_dev()
+        return False
+
+    return True
+
+async def get_user_id_by_message(connection, ticket_id: str, category: str):
+    cursor = connection.cursor()
+
+    table_name = {
+        "bug": "bugs",
+        "idea": "suggestions"
+    }.get(category)
+
+    if table_name is None:
+        logger.error(f"Invalid category: {category}")
+        return None
+
+    logger.debug(f"Getting user_id from {table_name} where id = {ticket_id}")
+
+    query = f"SELECT user_id FROM {table_name} WHERE id = ?"
+    
+    try:
+        cursor.execute(query, (ticket_id))
+        result = cursor.fetchone()
+        logger.debug(f"Query result: {result}")
+    except Exception as e:
+        logger.error(f"Error executing query: {e}")
+        await send_log_to_dev()
+        return None
+
+    return result[0] if result else None
