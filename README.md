@@ -1,7 +1,7 @@
 <br><br><br>
 
 <div  align="center">
-  <img width="40%" alt="logo" src="https://github.com/DXS-SQUAD/.github/assets/154594695/25ee6fd9-7f6e-4f77-9340-8e0c25bc1bd6">
+  <img width="90%" alt="logo" src="imgs/TechSupport.png">
 </div>
 
 <br><br><br><br>
