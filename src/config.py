@@ -16,7 +16,6 @@ data = home_dir + "/TechSupport/TechSupport.db"
 
 """
 for windows:
-
 TOKEN = "TOKEN"
 log_file = "logs/TechSupport.log"
 data = TechSupport.db"
@@ -38,8 +37,8 @@ logger.level("CRITICAL", color="<red>")
 logger.add(
     log_file,
     level="DEBUG",
-    rotation="10000 MB",
-    retention="7 days",
+    rotation="500 MB",
+    retention="30 days",
     backtrace=True,
     diagnose=True,
 )
