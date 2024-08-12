@@ -50,11 +50,11 @@ SUPPORT_TOKEN="BOT TOKEN" python3 main.py
 <details>
 <summary align="center">Imgs</summary>
 <div align="center">
-    <img src="1.png" width="40%" />
-    <img src="2.png" width="40%" />
-    <img src="3.png" width="40%" />
-    <img src="4.png" width="40%" />
-    <img src="5.png" width="40%" />
+    <img src="imgs/1.png" width="40%" />
+    <img src="imgs/2.png" width="40%" />
+    <img src="imgs/3.png" width="40%" />
+    <img src="imgs/4.png" width="40%" />
+    <img src="imgs/5.png" width="40%" />
 </div>
 </details>
 <br><br>
