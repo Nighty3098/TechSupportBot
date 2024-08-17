@@ -48,7 +48,7 @@ async def send_admin_answer(message: Message):
 
                 admin_message_text = f"🔥 Message from admin:\n{source_message}"
 
-                await bot.send_message(chat_id=client_id, text=admin_message_text)
+                logger.debug(await bot.send_message(chat_id=client_id, text=admin_message_text))
 
     except Exception as err:
         logger.error(f"{err}")
@@ -81,12 +81,12 @@ async def set_ticket_status(message: Message):
                 ticket_category = parts[2]
                 new_status = parts[3]
 
-                await update_ticket_status(await create_connection(), ticket_id, new_status, ticket_category)
+                logger.debug(await update_ticket_status(await create_connection(), ticket_id, new_status, ticket_category))
 
                 client_id = await get_user_id_by_message(await create_connection(), ticket_id, ticket_category)
-                await bot.send_message(client_id, text=f"🚀 The status of your ticket has been updated to: {new_status}")
+                logger.debug(await bot.send_message(client_id, text=f"🚀 The status of your ticket has been updated to: {new_status}"))
 
-                await message.answer("🔥 Ticket status has been successfully updated 🔥")
+                logger.debug(await message.answer("🔥 Ticket status has been successfully updated 🔥"))
 
     except Exception as err:
         logger.error(f"{err}")
