@@ -1,9 +1,9 @@
 HELLO_MESSAGE = """
-🍀 Hi! This is the DXS GROUP tech support bot. 🍀
+`🍀 Hi! This is the DXS GROUP tech support bot. 🍀`
 
 If you have found bugs and errors in our programs, or you have suggestions for the development of the project, you can send information to our team using the bot.
 
-✅ Select the desired item ✅:
+`✅ Select the desired item ✅:`
 """
 
 IDEA_TEXT = """
@@ -47,6 +47,6 @@ OUR_PRODUCTS_TEXT = """
 SUPPORT_TEXT = """
 🏦 You can support our project through ton: 🏦
 
-UQCF-sPDO0QqkNtvy5CKSvYWEsZS6l7vzaytV36oYM0SNhKt
+`UQCF-sPDO0QqkNtvy5CKSvYWEsZS6l7vzaytV36oYM0SNhKt`
 
 """
