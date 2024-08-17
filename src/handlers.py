@@ -25,7 +25,7 @@ from admin import send_admin_answer
 @dp.message(CommandStart())
 async def main_menu(message: Message) -> None:
     try:
-        global user_id, message_id
+        global user_id
         user_id = str(message.from_user.id)
         chat_id = message.chat.id
         member = await bot.get_chat_member(chat_id, user_id)
@@ -34,9 +34,9 @@ async def main_menu(message: Message) -> None:
         image_path = "resources/TechSupport.png"
 
         photo = FSInputFile(image_path)
-        message_id = await message.answer_photo(
-            photo, caption=HELLO_MESSAGE, reply_markup=await main_kb()
-        )
+        logger.debug(await message.answer_photo(
+            photo, caption=HELLO_MESSAGE, reply_markup=await main_kb(), parse_mode='Markdown'
+        ))
 
         logger.debug(f"{user_id} - main menu")
 

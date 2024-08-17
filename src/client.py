@@ -29,12 +29,12 @@ async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
 
         message_id = callback.message.message_id
 
-        await bot.edit_message_caption(
+        logger.debug(await bot.edit_message_caption(
             chat_id=callback.message.chat.id,
             message_id=message_id,
             caption=IDEA_TEXT,
             reply_markup=await back_btn(),
-        )
+        ))
 
     except Exception as err:
         logger.error(f"{err}")
@@ -50,12 +50,12 @@ async def GetUserBug(callback: types.CallbackQuery, state: FSMContext):
 
         message_id = callback.message.message_id
 
-        await bot.edit_message_caption(
+        logger.debug(await bot.edit_message_caption(
             chat_id=callback.message.chat.id,
             message_id=message_id,
             caption=BUG_TEXT,
             reply_markup=await back_btn(),
-        )
+        ))
 
     except Exception as err:
         logger.error(f"{err}")
@@ -69,21 +69,21 @@ async def IdeaUserMessage(message: Message, state: FSMContext):
         logger.debug(f"Idea suggest from {username}: {message.text}")
 
         try:
+            await state.set_state(GetIdea.done)
+
             current_datetime = datetime.datetime.now()
             responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
 
             connection = await create_connection()
-            await save_report_data(
+            logger.debug(await save_report_data(
                 connection=connection,
                 username=username,
                 user_id=str(message.from_user.id),
                 message=message,
                 label="SUGGESTION",
-            )
+            ))
 
-            await send_messages(message, username, "IDEA", responsdate)
-
-            await message.answer(DONE_TEXT)
+            logger.debug(await send_messages(message, username, "IDEA", responsdate))
         except Exception as e:
             logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
 
@@ -99,40 +99,55 @@ async def BugUserMessage(message: types.Message, state: FSMContext):
         logger.debug(f"Bug report from {username}: {message.text}")
 
         try:
+            await state.set_state(GetBug.done)
+
             current_datetime = datetime.datetime.now()
             responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
 
             connection = await create_connection()
-            await save_report_data(
+            logger.debug(await save_report_data(
                 connection=connection,
                 username=username,
                 user_id=str(message.from_user.id),
                 message=message,
                 label="BUG",
-            )
+            ))
 
-            await send_messages(message, username, "BUG", responsdate)
-
-            await message.answer(DONE_TEXT)
+            logger.debug(await send_messages(message, username, "BUG", responsdate))
         except Exception as e:
             logging.error(f"Error forwarding message from {username} to {CHANNEL}: {e}")
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
 
+@dp.message(GetBug.done or GetIdea.done)
+async def send_done_message(message: types.Message, state: FSMContext):
+    try:
+        username = message.from_user.username
+        user_id = message.from_user.id
+
+        logger.debug(await message.answer(DONE_TEXT))
+
+    except Exception as err:
+        logger.error(f"{err}")
+        await send_log_to_dev()
+
 @dp.callback_query(F.data == "Back")
-async def BackToStartMenu(callback: types.CallbackQuery):
+async def BackToStartMenu(callback: types.CallbackQuery, state: FSMContext):
     try:
         logger.debug(f"{callback.message.chat.id} - back button")
 
         message_id = callback.message.message_id
 
-        await bot.edit_message_caption(
+        await state.set_state(GetBug.none_state)
+        await state.set_state(GetIdea.none_state)
+
+        logger.debug(await bot.edit_message_caption(
             chat_id=callback.message.chat.id,
             message_id=message_id,
             caption=HELLO_MESSAGE,
             reply_markup=await main_kb(),
-        )
+        ))
 
     except Exception as err:
         logger.error(f"{err}")
@@ -142,16 +157,18 @@ async def BackToStartMenu(callback: types.CallbackQuery):
 @dp.callback_query(F.data == "Contacts")
 async def Contacts(callback: types.CallbackQuery):
     try:
+        user_id = callback.from_user,id
+        
         logger.debug(f"{user_id} - contacts")
 
         message_id = callback.message.message_id
 
-        await bot.edit_message_caption(
+        logger.debug(await bot.edit_message_caption(
             chat_id=callback.message.chat.id,
             message_id=message_id,
             caption=DEVS_TEXT,
             reply_markup=await back_btn(),
-        )
+        ))
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
@@ -160,16 +177,19 @@ async def Contacts(callback: types.CallbackQuery):
 @dp.callback_query(F.data == "OurProducts")
 async def OurProducts(callback: types.CallbackQuery):
     try:
+        user_id = callback.from_user,id
+
         logger.debug(f"{user_id} - our products")
 
         message_id = callback.message.message_id
 
-        await bot.edit_message_caption(
+        logger.debug(await bot.edit_message_caption(
             chat_id=callback.message.chat.id,
             message_id=message_id,
             caption=OUR_PRODUCTS_TEXT,
             reply_markup=await back_btn(),
-        )
+            parse_mode='Markdown'
+        ))
 
     except Exception as err:
         logger.error(f"{err}")
@@ -179,16 +199,19 @@ async def OurProducts(callback: types.CallbackQuery):
 @dp.callback_query(F.data == "SupportMe")
 async def SupportMe(callback: types.CallbackQuery):
     try:
+        user_id = callback.from_user,id
+
         logger.debug(f"{user_id} - support me")
 
         message_id = callback.message.message_id
 
-        await bot.edit_message_caption(
+        logger.debug(await bot.edit_message_caption(
             chat_id=callback.message.chat.id,
             message_id=message_id,
             caption=SUPPORT_TEXT,
             reply_markup=await back_btn(),
-        )
+            parse_mode='Markdown'
+        ))
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
