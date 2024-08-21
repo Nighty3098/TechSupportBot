@@ -8,7 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import FSInputFile, Message
 from aiogram.types.input_file import InputFile
 
-from config import CHANNEL, DEVS, TOKEN, bot, data, dp, log_file, logger
+from config import CHANNEL, NOTIFY_CHAT, TOKEN, bot, data, dp, log_file, logger
 from db.check_for_qsl_injection import is_sql_injection_attempt
 from db.db import create_connection, create_table, save_report_data
 from kb_builder import back_btn, main_kb
@@ -45,8 +45,7 @@ async def main_menu(message: Message) -> None:
         connection = await create_connection()
         await create_table(connection)
 
-        for DEV in DEVS:
-            await bot.send_message(chat_id=DEV, text=message_for_dev)
+        await bot.send_message(chat_id=NOTIFY_CHAT, text=message_for_dev)
         await send_log_to_dev()
 
     except Exception as err:
