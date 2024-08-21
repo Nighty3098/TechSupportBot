@@ -6,7 +6,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message
 from aiogram import types
 
-from config import dp, logger, bot, CHANNEL
+from config import dp, logger, bot, CHANNEL, NOTIFY_CHAT
 from send_logs import send_log_to_dev
 from resources.TEXT_MESSAGES import DONE_TEXT
 from db.check_for_qsl_injection import is_sql_injection_attempt
@@ -26,12 +26,14 @@ async def send_messages(message: types.Message, username: str, status: str, date
             forward_text += message.text
             id = await get_id_by_message(await create_connection(), forward_text, date, message.from_user.id, status.lower())
             channel_message += f"`/set_ticket_status | {id} | {status.lower()} | status`\n"
+            channel_message += f"`/get_ticket_status | {id} | {status.lower()}`\n"
         
         if message.photo:
             photo = message.photo[-1]
             caption = message.caption if message.caption else "No description provided."
             id = await get_id_by_message(await create_connection(), caption, date, message.from_user.id, status.lower())
             channel_message += f"`/set_ticket_status | {id} | {status.lower()} | status`\n"
+            channel_message += f"`/get_ticket_status | {id} | {status.lower()}`\n"
             channel_message += f"\n🔥 Report: {caption}"
             await bot.send_photo(chat_id=CHANNEL, photo=photo.file_id, caption=channel_message, parse_mode="Markdown")
         
@@ -40,6 +42,7 @@ async def send_messages(message: types.Message, username: str, status: str, date
             caption = message.caption if message.caption else "No description provided."
             id = await get_id_by_message(await create_connection(), caption, date, message.from_user.id, status.lower())
             channel_message += f"`/set_ticket_status | {id} | {status.lower()} | status`\n"
+            channel_message += f"`/get_ticket_status | {id} | {status.lower()}`\n"
             channel_message += f"\n🔥 Report: {caption}"
             await bot.send_document(chat_id=CHANNEL, document=document.file_id, caption=channel_message, parse_mode="Markdown")
         
@@ -48,6 +51,7 @@ async def send_messages(message: types.Message, username: str, status: str, date
             caption = message.caption if message.caption else "No description provided."
             id = await get_id_by_message(await create_connection(), caption, date, message.from_user.id, status.lower())
             channel_message += f"`/set_ticket_status | {id} | {status.lower()} | status`\n"
+            channel_message += f"`/get_ticket_status | {id} | {status.lower()}`\n"
             channel_message += f"\n🔥 Report: {caption}"
             await bot.send_video(chat_id=CHANNEL, video=video.file_id, caption=channel_message, parse_mode="Markdown")
         

@@ -24,6 +24,8 @@ data = TechSupport.db"
 DEVS = ["1660218648"]
 CHANNEL = "-1002237746780"
 
+NOTIFY_CHAT = "-4522084460"
+
 bot = Bot(TOKEN)
 dp = Dispatcher()
 
