@@ -8,8 +8,9 @@ from aiogram.types import FSInputFile, Message
 from aiogram.types.input_file import InputFile
 
 from config import CHANNEL, DEVS, TOKEN, bot, data, dp, log_file, logger
-from db.db import (create_connection, create_table, get_user_id_by_message,
-                   save_report_data, update_ticket_status, get_ticket_status, get_all_tickets)
+from db.db import (create_connection, create_table, get_all_tickets,
+                   get_ticket_status, get_user_id_by_message, save_report_data,
+                   update_ticket_status)
 from get_admins_id import get_users
 from kb_builder import back_btn, main_kb
 from resources.TEXT_MESSAGES import (BUG_TEXT, DEVS_TEXT, DONE_TEXT,
@@ -138,9 +139,14 @@ async def get_status(message: Message):
                 ticket_id = parts[1]
                 ticket_category = parts[2]
 
-                ticket_status = await get_ticket_status( await create_connection(), ticket_id, ticket_category )
+                ticket_status = await get_ticket_status(
+                    await create_connection(), ticket_id, ticket_category
+                )
 
-                await message.answer(f"The current status of the ticket is: {ticket_status} to change the status enter: `/set_ticket_status | {ticket_id} | {ticket_category.lower()} | Ticket status`", parse_mode="Markdown")
+                await message.answer(
+                    f"The current status of the ticket is: {ticket_status} to change the status enter: `/set_ticket_status | {ticket_id} | {ticket_category.lower()} | Ticket status`",
+                    parse_mode="Markdown",
+                )
 
     except Exception as err:
         logger.error(f"{err}")
@@ -148,7 +154,7 @@ async def get_status(message: Message):
 
 
 @dp.message(Command("get_all_tickets"))
-async def get_status(message: Message):
+async def get_tickets(message: Message):
     try:
         user_id = message.from_user.id
         admins = await get_users()
@@ -156,17 +162,19 @@ async def get_status(message: Message):
 
         if user_id not in admins:
             logger.warning(
-                f"User {message.from_user.username} : {user_id} trying to exec get_ticket_status command"
+                f"User {message.from_user.username} : {user_id} trying to exec get_all_tickets command"
             )
         else:
             logger.warning(
-                f"User: {message.from_user.username} : {user_id} - get_ticket_status"
+                f"User: {message.from_user.username} : {user_id} - get_all_tickets"
             )
 
             ticket_messages = []
             tickets = await get_all_tickets(await create_connection())
             for ticket in tickets:
-                ticket_messages.append(f"*ID*: {ticket['id']}\n*Category:* {ticket['category']}\n*Status:* {ticket['status']}\n*Message:* {ticket['message']}")
+                ticket_messages.append(
+                    f"*ID*: {ticket['id']}\n*Category:* {ticket['category']}\n*Status:* {ticket['status']}\n*User ID:* {ticket['user_id']}\n*Username:* @{ticket['username']}\n*Message:* {ticket['message']}"
+                )
             full_message = "\n\n".join(ticket_messages)
 
             if not full_message:
@@ -177,5 +185,3 @@ async def get_status(message: Message):
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
-
-

@@ -83,6 +83,10 @@ async def IdeaUserMessage(message: Message, state: FSMContext):
 
         asyncio.create_task(send_messages(message, username, "IDEA", responsdate))
 
+        logger.debug(await message.answer(DONE_TEXT))
+        logger.info(await state.set_state(GetBug.none_state))
+        logger.info(await state.set_state(GetIdea.none_state))
+
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
@@ -108,6 +112,10 @@ async def BugUserMessage(message: types.Message, state: FSMContext):
         )
 
         asyncio.create_task(send_messages(message, username, "BUG", responsdate))
+
+        logger.debug(await message.answer(DONE_TEXT))
+        logger.info(await state.set_state(GetBug.none_state))
+        logger.info(await state.set_state(GetIdea.none_state))
 
     except Exception as err:
         logger.error(f"{err}")

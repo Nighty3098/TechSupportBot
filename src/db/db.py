@@ -112,7 +112,7 @@ async def get_id_by_message(
 ):
     cursor = connection.cursor()
 
-    table_name = {"bug": "bugs", "idea": "suggestions"}.get(category)
+    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(category)
 
     if table_name is None:
         logger.error(f"Invalid category: {category}")
@@ -143,7 +143,7 @@ async def update_ticket_status(
 ):
     cursor = connection.cursor()
 
-    table_name = {"bug": "bugs", "idea": "suggestions"}.get(category)
+    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(category)
 
     if table_name is None:
         logger.error(f"Invalid category: {category}")
@@ -172,8 +172,9 @@ async def update_ticket_status(
 
 async def get_user_id_by_message(connection, ticket_id: str, category: str):
     cursor = connection.cursor()
+    category = category.lower()
 
-    table_name = {"bug": "bugs", "idea": "suggestions"}.get(category)
+    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(category)
 
     if table_name is None:
         logger.error(f"Invalid category: {category}")
@@ -194,10 +195,11 @@ async def get_user_id_by_message(connection, ticket_id: str, category: str):
 
     return result[0] if result else None
 
+
 async def get_ticket_status(connection, ticket_id: str, category: str):
     cursor = connection.cursor()
 
-    table_name = {"bug": "bugs", "idea": "suggestions"}.get(category)
+    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(category)
 
     if table_name is None:
         logger.error(f"Invalid category: {category}")
@@ -222,12 +224,13 @@ async def get_ticket_status(connection, ticket_id: str, category: str):
         await send_log_to_dev()
         return None
 
+
 async def get_all_tickets(connection):
     tickets = []
 
     queries = {
-        "bugs": "SELECT id, status, message FROM bugs",
-        "suggestions": "SELECT id, status, message FROM suggestions"
+        "bugs": "SELECT id, status, message, user_id, username FROM bugs",
+        "suggestions": "SELECT id, status, message, user_id, username FROM suggestions",
     }
 
     try:
@@ -237,13 +240,17 @@ async def get_all_tickets(connection):
             results = cursor.fetchall()
 
             for row in results:
-                ticket_id, status, message = row
-                tickets.append({
-                    "id": ticket_id,
-                    "category": category,
-                    "status": status,
-                    "message": message
-                })
+                ticket_id, status, message, user_id, username = row
+                tickets.append(
+                    {
+                        "id": ticket_id,
+                        "category": category,
+                        "status": status,
+                        "message": message,
+                        "user_id": user_id,
+                        "username": username,
+                    }
+                )
 
     except Exception as e:
         logger.error(f"Error fetching tickets: {e}")
