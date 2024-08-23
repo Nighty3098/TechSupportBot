@@ -8,6 +8,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import FSInputFile, Message
 from aiogram.types.input_file import InputFile
 
+from admin import send_admin_answer
+from client import (BackToStartMenu, BugUserMessage, Contacts, GetUserBug,
+                    GetUserIdea, IdeaUserMessage, SupportMe)
 from config import CHANNEL, NOTIFY_CHAT, TOKEN, bot, data, dp, log_file, logger
 from db.check_for_qsl_injection import is_sql_injection_attempt
 from db.db import create_connection, create_table, save_report_data
@@ -19,8 +22,6 @@ from send_data import send_messages
 from send_logs import send_log_to_dev
 from StatesGroup import GetBug, GetIdea
 
-from client import GetUserIdea, GetUserBug, IdeaUserMessage, BugUserMessage, BackToStartMenu, Contacts, OurProducts, SupportMe
-from admin import send_admin_answer
 
 @dp.message(CommandStart())
 async def main_menu(message: Message) -> None:
@@ -31,12 +32,17 @@ async def main_menu(message: Message) -> None:
         member = await bot.get_chat_member(chat_id, user_id)
         username = member.user.username
 
-        image_path = "resources/TechSupport.png"
+        image_path = "resources/header.png"
 
         photo = FSInputFile(image_path)
-        logger.debug(await message.answer_photo(
-            photo, caption=HELLO_MESSAGE, reply_markup=await main_kb(), parse_mode='Markdown'
-        ))
+        logger.debug(
+            await message.answer_photo(
+                photo,
+                caption=HELLO_MESSAGE,
+                reply_markup=await main_kb(),
+                parse_mode="Markdown",
+            )
+        )
 
         logger.debug(f"{user_id} - main menu")
 

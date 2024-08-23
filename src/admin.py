@@ -169,7 +169,10 @@ async def get_status(message: Message):
                 ticket_messages.append(f"*ID*: {ticket['id']}\n*Category:* {ticket['category']}\n*Status:* {ticket['status']}\n*Message:* {ticket['message']}")
             full_message = "\n\n".join(ticket_messages)
 
-            await message.answer(full_message, parse_mode="Markdown")
+            if not full_message:
+                await message.answer("No data available", parse_mode="Markdown")
+            else:
+                await message.answer(full_message, parse_mode="Markdown")
 
     except Exception as err:
         logger.error(f"{err}")
