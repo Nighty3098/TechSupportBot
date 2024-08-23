@@ -2,6 +2,10 @@
 
 <div  align="center">
   <img width="90%" alt="logo" src="imgs/TechSupport.png">
+  <br>
+  <br>
+  <img src="https://github.com/Nighty3098/DevIcons/blob/main/badges/badges_python.png?raw=true" width="70px"/>
+  <img src="https://github.com/Nighty3098/DevIcons/blob/main/badges/badges_telegram.png?raw=true" width="70px"/>
 </div>
 
 <br><br><br><br>
@@ -11,26 +15,26 @@
 ### Functional
 
 - Menu items:
-    - sending bug report
-    - submit a development proposal
-    - contacts
-    - support the team
-    - order development
+
+  - sending bug report
+  - submit a development proposal
+  - contacts
+  - support the team
+  - order development
 
 - User features:
-    - sending tickets
-    - receiving notifications about ticket status changes
-    - receiving notifications from the developer
+
+  - sending tickets
+  - receiving notifications about ticket status changes
+  - receiving notifications from the developer
 
 - Opportunities for developer:
-    - tracking tickets in a separate chat room
-    - ticket status change
-    - sending a notification to the user
-
+  - tracking tickets in a separate chat room
+  - ticket status change
+  - sending a notification to the user
 
 > [!TIP]
 > All data and links to user attachments are stored in a sqlite database
-
 
 ### Installing
 
