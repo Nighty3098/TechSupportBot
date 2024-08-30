@@ -39,8 +39,9 @@ logger.level("CRITICAL", color="<red>")
 logger.add(
     log_file,
     level="DEBUG",
-    rotation="500 MB",
+    rotation="100 MB",
     retention="30 days",
+    compression="zip",
     backtrace=True,
     diagnose=True,
 )
