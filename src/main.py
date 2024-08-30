@@ -5,7 +5,7 @@ from aiogram.dispatcher.dispatcher import Dispatcher
 
 from db.db import create_connection, create_table
 from handlers import bot, dp
-
+from setproctitle import setproctitle
 
 async def main() -> None:
     connection = await create_connection()
@@ -15,4 +15,5 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
+    setproctitle("TechSupportBot")
     asyncio.run(main())
