@@ -2,10 +2,11 @@ import asyncio
 
 from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
+from setproctitle import setproctitle
 
 from db.db import create_connection, create_table
 from handlers import bot, dp
-from setproctitle import setproctitle
+
 
 async def main() -> None:
     connection = await create_connection()
