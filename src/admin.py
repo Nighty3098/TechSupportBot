@@ -15,7 +15,7 @@ from get_admins_id import get_users
 from kb_builder import back_btn, main_kb
 from resources.TEXT_MESSAGES import (BUG_TEXT, DEVS_TEXT, DONE_TEXT,
                                      HELLO_MESSAGE, IDEA_TEXT,
-                                     OUR_PRODUCTS_TEXT, SUPPORT_TEXT)
+                                     OUR_PRODUCTS_TEXT, SUPPORT_TEXT, INCORRECT_INPUT_FORMAT_ERROR)
 from send_data import send_messages
 from send_logs import send_log_to_dev
 from StatesGroup import GetBug, GetIdea
@@ -66,7 +66,7 @@ async def send_admin_answer(message: Message):
             parts = message.text.split(" | ")
 
             if len(parts) != 3:
-                logger.error("Incorrect input format")
+                logger.error(INCORRECT_INPUT_FORMAT_ERROR)
             else:
                 client_id = parts[1]
                 source_message = parts[2]
