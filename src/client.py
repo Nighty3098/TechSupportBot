@@ -21,7 +21,7 @@ from StatesGroup import GetBug, GetIdea
 
 
 @dp.callback_query(F.data == "SuggestIdea")
-async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
+async def get_users_idea(callback: types.CallbackQuery, state: FSMContext):
     try:
         await state.set_state(GetIdea.wait_for_message)
         logger.debug(f"{callback.message.chat.id} - idea suggest")
@@ -42,7 +42,7 @@ async def GetUserIdea(callback: types.CallbackQuery, state: FSMContext):
 
 
 @dp.callback_query(F.data == "BugReport")
-async def GetUserBug(callback: types.CallbackQuery, state: FSMContext):
+async def get_users_bug(callback: types.CallbackQuery, state: FSMContext):
     try:
         await state.set_state(GetBug.wait_for_message)
         logger.debug(f"{callback.message.chat.id} - bug report")
@@ -63,7 +63,7 @@ async def GetUserBug(callback: types.CallbackQuery, state: FSMContext):
 
 
 @dp.message(GetIdea.wait_for_message)
-async def IdeaUserMessage(message: Message, state: FSMContext):
+async def user_message_idea(message: Message, state: FSMContext):
     try:
         username = message.from_user.username
         logger.debug(f"Idea suggest from {username}: {message.text}")
@@ -93,7 +93,7 @@ async def IdeaUserMessage(message: Message, state: FSMContext):
 
 
 @dp.message(GetBug.wait_for_message)
-async def BugUserMessage(message: types.Message, state: FSMContext):
+async def user_message_bug(message: types.Message, state: FSMContext):
     try:
         username = message.from_user.username
         logger.debug(f"Bug report from {username}: {message.text}")
@@ -125,8 +125,6 @@ async def BugUserMessage(message: types.Message, state: FSMContext):
 @dp.message(GetIdea.done)
 async def send_done_message_idea(message: types.Message, state: FSMContext):
     try:
-        username = message.from_user.username
-        user_id = message.from_user.id
         logger.debug(await message.answer(DONE_TEXT))
 
     except Exception as err:
@@ -137,8 +135,6 @@ async def send_done_message_idea(message: types.Message, state: FSMContext):
 @dp.message(GetBug.done)
 async def send_done_message_bug(message: types.Message, state: FSMContext):
     try:
-        username = message.from_user.username
-        user_id = message.from_user.id
         logger.debug(await message.answer(DONE_TEXT))
 
     except Exception as err:
@@ -147,7 +143,7 @@ async def send_done_message_bug(message: types.Message, state: FSMContext):
 
 
 @dp.callback_query(F.data == "Back")
-async def BackToStartMenu(callback: types.CallbackQuery, state: FSMContext):
+async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
     try:
         logger.debug(f"{callback.message.chat.id} - back button")
         message_id = callback.message.message_id
@@ -170,7 +166,7 @@ async def BackToStartMenu(callback: types.CallbackQuery, state: FSMContext):
 
 
 @dp.callback_query(F.data == "Contacts")
-async def Contacts(callback: types.CallbackQuery):
+async def contacts(callback: types.CallbackQuery):
     try:
         user_id = callback.from_user.id
         logger.debug(f"{user_id} - contacts")
@@ -191,7 +187,7 @@ async def Contacts(callback: types.CallbackQuery):
 
 
 @dp.callback_query(F.data == "OurProducts")
-async def OurProducts(callback: types.CallbackQuery):
+async def our_products(callback: types.CallbackQuery):
     try:
         user_id = callback.from_user.id
         logger.debug(f"{user_id} - our products")
@@ -213,7 +209,7 @@ async def OurProducts(callback: types.CallbackQuery):
 
 
 @dp.callback_query(F.data == "SupportMe")
-async def SupportMe(callback: types.CallbackQuery):
+async def support_me(callback: types.CallbackQuery):
     try:
         user_id = callback.from_user.id
         logger.debug(f"{user_id} - support me")
