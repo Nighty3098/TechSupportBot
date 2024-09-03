@@ -50,3 +50,5 @@ SUPPORT_TEXT = """
 `UQCF-sPDO0QqkNtvy5CKSvYWEsZS6l7vzaytV36oYM0SNhKt`
 
 """
+
+INCORRECT_INPUT_FORMAT_ERROR = "Incorrect input format"
