@@ -9,8 +9,8 @@ from aiogram.types import FSInputFile, Message
 from aiogram.types.input_file import InputFile
 
 from admin import send_admin_answer
-from client import (BackToStartMenu, BugUserMessage, Contacts, GetUserBug,
-                    GetUserIdea, IdeaUserMessage, SupportMe)
+from client import (back_to_menu, contacts, get_users_bug, get_users_idea,
+                    support_me, user_message_bug, user_message_idea)
 from config import CHANNEL, NOTIFY_CHAT, TOKEN, bot, data, dp, log_file, logger
 from db.check_for_qsl_injection import is_sql_injection_attempt
 from db.db import create_connection, create_table, save_report_data

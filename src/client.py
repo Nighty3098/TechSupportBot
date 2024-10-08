@@ -157,6 +157,7 @@ async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
                 message_id=message_id,
                 caption=HELLO_MESSAGE,
                 reply_markup=await main_kb(),
+                parse_mode="MarkdownV2",
             )
         )
 
@@ -199,7 +200,7 @@ async def our_products(callback: types.CallbackQuery):
                 message_id=message_id,
                 caption=OUR_PRODUCTS_TEXT,
                 reply_markup=await back_btn(),
-                parse_mode="Markdown",
+                parse_mode="MarkdownV2",
             )
         )
 
@@ -221,7 +222,7 @@ async def support_me(callback: types.CallbackQuery):
                 message_id=message_id,
                 caption=SUPPORT_TEXT,
                 reply_markup=await back_btn(),
-                parse_mode="Markdown",
+                parse_mode="MarkdownV2",
             )
         )
 
