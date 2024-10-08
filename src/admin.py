@@ -4,6 +4,7 @@ import logging
 from aiogram import F, handlers, types
 from aiogram.filters import Command, CommandStart, Filter
 from aiogram.fsm.context import FSMContext
+from aiogram.methods.send_chat_action import SendChatAction
 from aiogram.types import FSInputFile, Message
 from aiogram.types.input_file import InputFile
 
@@ -190,14 +191,44 @@ async def get_tickets(message: Message):
             tickets = await get_all_tickets(await create_connection())
             for ticket in tickets:
                 ticket_messages.append(
-                    f"ID: {ticket['id']}\nCategory: {ticket['category']}\nStatus: {ticket['status']}\nUser ID: {ticket['user_id']}\nUsername: @{ticket['username']}"
+                    f"ID: {ticket['id']}\nCategory: {ticket['category']}\nStatus: {ticket['status']}\nUser ID: {ticket['user_id']}\nUsername: @{ticket['username']}\nMessage: {ticket['message']}"
                 )
             full_message = "\n\n".join(ticket_messages)
+
+            with open("output.txt", "w", encoding="utf-8") as f:
+                f.write(full_message)
 
             if not full_message:
                 await message.answer("No data available")
             else:
-                await message.answer(full_message)
+                await message.answer_document(FSInputFile("output.txt"))
+                # await message.answer(full_message)
+
+    except Exception as err:
+        logger.error(f"{err}")
+        await send_log_to_dev()
+
+
+@dp.message(Command("get_db"))
+async def get_db(message: Message):
+    try:
+        user_id = message.from_user.id
+        admins = await get_users()
+        logger.debug(f"Loading admins list: {admins}")
+
+        if user_id not in admins:
+            logger.warning(
+                f"User {message.from_user.username} : {user_id} trying to exec get_db command"
+            )
+        else:
+            logger.warning(f"User: {message.from_user.username} : {user_id} - get_db")
+
+            try:
+                await bot.send_chat_action(action="upload_document", chat_id=user_id)
+                with open(data, "rb") as db_file:
+                    await message.answer_document(FSInputFile(data))
+            except FileNotFoundError:
+                await message.answer("Файл базы данных не найден.")
 
     except Exception as err:
         logger.error(f"{err}")
