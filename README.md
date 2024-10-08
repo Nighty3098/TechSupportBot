@@ -33,6 +33,28 @@
   - ticket status change
   - sending a notification to the user
 
+### Commands for admin
+
+> Set ticket status (user will be notified)
+> 
+> /set_ticket_status | ticket id | ticket category | ticket status
+
+> View the category of a certain ticket
+> 
+> /get_ticket_status | ticket id | ticket category
+
+> Send notification to user
+> 
+> /admin_answer | user id (can be taken from the database) | message for user
+
+> Get all tickets from the database
+> 
+> /get_all_tickets
+
+> Get DB file
+> 
+> /get_db
+
 > [!TIP]
 > All data and links to user attachments are stored in a sqlite database
 
