@@ -190,7 +190,7 @@ async def get_tickets(message: Message):
             tickets = await get_all_tickets(await create_connection())
             for ticket in tickets:
                 ticket_messages.append(
-                    f"ID: {ticket['id']}\nCategory: {ticket['category']}\nStatus: {ticket['status']}\nUser ID: {ticket['user_id']}\nUsername: @{ticket['username']}\nMessage: {ticket['message']}"
+                    f"ID: {ticket['id']}\nCategory: {ticket['category']}\nStatus: {ticket['status']}\nUser ID: {ticket['user_id']}\nUsername: @{ticket['username']}"
                 )
             full_message = "\n\n".join(ticket_messages)
 
