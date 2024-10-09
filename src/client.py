@@ -33,6 +33,7 @@ async def get_users_idea(callback: types.CallbackQuery, state: FSMContext):
                 message_id=message_id,
                 caption=IDEA_TEXT,
                 reply_markup=await back_btn(),
+                parse_mode="MarkdownV2"
             )
         )
 
@@ -54,6 +55,7 @@ async def get_users_bug(callback: types.CallbackQuery, state: FSMContext):
                 message_id=message_id,
                 caption=BUG_TEXT,
                 reply_markup=await back_btn(),
+                parse_mode="MarkdownV2"
             )
         )
 
@@ -113,7 +115,7 @@ async def user_message_bug(message: types.Message, state: FSMContext):
 
         asyncio.create_task(send_messages(message, username, "BUG", responsdate))
 
-        logger.debug(await message.answer(DONE_TEXT))
+        logger.debug(await message.answer(DONE_TEXT, parse_mode="MarkdownV2"))
         logger.info(await state.set_state(GetBug.none_state))
         logger.info(await state.set_state(GetIdea.none_state))
 
@@ -125,7 +127,7 @@ async def user_message_bug(message: types.Message, state: FSMContext):
 @dp.message(GetIdea.done)
 async def send_done_message_idea(message: types.Message, state: FSMContext):
     try:
-        logger.debug(await message.answer(DONE_TEXT))
+        logger.debug(await message.answer(DONE_TEXT, parse_mode="MarkdownV2"))
 
     except Exception as err:
         logger.error(f"{err}")
@@ -135,7 +137,7 @@ async def send_done_message_idea(message: types.Message, state: FSMContext):
 @dp.message(GetBug.done)
 async def send_done_message_bug(message: types.Message, state: FSMContext):
     try:
-        logger.debug(await message.answer(DONE_TEXT))
+        logger.debug(await message.answer(DONE_TEXT, parse_mode="MarkdownV2"))
 
     except Exception as err:
         logger.error(f"{err}")
@@ -157,7 +159,7 @@ async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
                 message_id=message_id,
                 caption=HELLO_MESSAGE,
                 reply_markup=await main_kb(),
-                parse_mode="MarkdownV2",
+                parse_mode="MarkdownV2"
             )
         )
 
@@ -179,6 +181,7 @@ async def contacts(callback: types.CallbackQuery):
                 message_id=message_id,
                 caption=DEVS_TEXT,
                 reply_markup=await back_btn(),
+                parse_mode="MarkdownV2"
             )
         )
 
@@ -200,7 +203,7 @@ async def our_products(callback: types.CallbackQuery):
                 message_id=message_id,
                 caption=OUR_PRODUCTS_TEXT,
                 reply_markup=await back_btn(),
-                parse_mode="MarkdownV2",
+                parse_mode="MarkdownV2"
             )
         )
 
@@ -222,7 +225,7 @@ async def support_me(callback: types.CallbackQuery):
                 message_id=message_id,
                 caption=SUPPORT_TEXT,
                 reply_markup=await back_btn(),
-                parse_mode="MarkdownV2",
+                parse_mode="MarkdownV2"
             )
         )
 
