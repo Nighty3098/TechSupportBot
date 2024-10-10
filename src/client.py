@@ -11,7 +11,7 @@ from aiogram.types.input_file import InputFile
 
 from config import CHANNEL, DEVS, TOKEN, bot, data, dp, log_file, logger
 from db.db import create_connection, create_table, save_report_data
-from kb_builder import back_btn, main_kb
+from kb_builder import back_btn, contacts_btn, main_kb
 from resources.TEXT_MESSAGES import (BUG_TEXT, DEVS_TEXT, DONE_TEXT,
                                      HELLO_MESSAGE, IDEA_TEXT,
                                      OUR_PRODUCTS_TEXT, SUPPORT_TEXT)
@@ -23,19 +23,21 @@ from StatesGroup import GetBug, GetIdea
 @dp.callback_query(F.data == "SuggestIdea")
 async def get_users_idea(callback: types.CallbackQuery, state: FSMContext):
     try:
+        global last_bot_message_id
+
         await state.set_state(GetIdea.wait_for_message)
         logger.debug(f"{callback.message.chat.id} - idea suggest")
 
         message_id = callback.message.message_id
-        logger.debug(
-            await bot.edit_message_caption(
-                chat_id=callback.message.chat.id,
-                message_id=message_id,
-                caption=IDEA_TEXT,
-                reply_markup=await back_btn(),
-                parse_mode="MarkdownV2"
-            )
+        last_msg = await bot.edit_message_caption(
+            chat_id=callback.message.chat.id,
+            message_id=message_id,
+            caption=IDEA_TEXT,
+            reply_markup=await back_btn(),
+            parse_mode="MarkdownV2",
         )
+
+        last_bot_message_id = last_msg.message_id
 
     except Exception as err:
         logger.error(f"{err}")
@@ -45,19 +47,22 @@ async def get_users_idea(callback: types.CallbackQuery, state: FSMContext):
 @dp.callback_query(F.data == "BugReport")
 async def get_users_bug(callback: types.CallbackQuery, state: FSMContext):
     try:
+        global last_bot_message_id
+
         await state.set_state(GetBug.wait_for_message)
         logger.debug(f"{callback.message.chat.id} - bug report")
 
         message_id = callback.message.message_id
-        logger.debug(
-            await bot.edit_message_caption(
-                chat_id=callback.message.chat.id,
-                message_id=message_id,
-                caption=BUG_TEXT,
-                reply_markup=await back_btn(),
-                parse_mode="MarkdownV2"
-            )
+
+        last_msg = await bot.edit_message_caption(
+            chat_id=callback.message.chat.id,
+            message_id=message_id,
+            caption=BUG_TEXT,
+            reply_markup=await back_btn(),
+            parse_mode="MarkdownV2",
         )
+
+        last_bot_message_id = last_msg.message_id
 
     except Exception as err:
         logger.error(f"{err}")
@@ -70,7 +75,6 @@ async def user_message_idea(message: Message, state: FSMContext):
         username = message.from_user.username
         logger.debug(f"Idea suggest from {username}: {message.text}")
 
-        await state.set_state(GetIdea.done)
         current_datetime = datetime.datetime.now()
         responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
 
@@ -85,7 +89,21 @@ async def user_message_idea(message: Message, state: FSMContext):
 
         asyncio.create_task(send_messages(message, username, "IDEA", responsdate))
 
-        logger.debug(await message.answer(DONE_TEXT))
+        photo = FSInputFile("resources/header.png")
+
+        logger.debug(
+            await bot.delete_message(
+                chat_id=message.chat.id, message_id=last_bot_message_id
+            )
+        )
+        logger.debug(
+            await message.answer_photo(
+                photo=photo,
+                caption=DONE_TEXT,
+                reply_markup=await back_btn(),
+                parse_mode="MarkdownV2",
+            )
+        )
         logger.info(await state.set_state(GetBug.none_state))
         logger.info(await state.set_state(GetIdea.none_state))
 
@@ -100,7 +118,6 @@ async def user_message_bug(message: types.Message, state: FSMContext):
         username = message.from_user.username
         logger.debug(f"Bug report from {username}: {message.text}")
 
-        await state.set_state(GetBug.done)
         current_datetime = datetime.datetime.now()
         responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
 
@@ -115,29 +132,24 @@ async def user_message_bug(message: types.Message, state: FSMContext):
 
         asyncio.create_task(send_messages(message, username, "BUG", responsdate))
 
-        logger.debug(await message.answer(DONE_TEXT, parse_mode="MarkdownV2"))
+        photo = FSInputFile("resources/header.png")
+
+        logger.debug(
+            await bot.delete_message(
+                chat_id=message.chat.id, message_id=last_bot_message_id
+            )
+        )
+
+        logger.debug(
+            await message.answer_photo(
+                photo=photo,
+                caption=DONE_TEXT,
+                parse_mode="MarkdownV2",
+                reply_markup=await back_btn(),
+            )
+        )
         logger.info(await state.set_state(GetBug.none_state))
         logger.info(await state.set_state(GetIdea.none_state))
-
-    except Exception as err:
-        logger.error(f"{err}")
-        await send_log_to_dev()
-
-
-@dp.message(GetIdea.done)
-async def send_done_message_idea(message: types.Message, state: FSMContext):
-    try:
-        logger.debug(await message.answer(DONE_TEXT, parse_mode="MarkdownV2"))
-
-    except Exception as err:
-        logger.error(f"{err}")
-        await send_log_to_dev()
-
-
-@dp.message(GetBug.done)
-async def send_done_message_bug(message: types.Message, state: FSMContext):
-    try:
-        logger.debug(await message.answer(DONE_TEXT, parse_mode="MarkdownV2"))
 
     except Exception as err:
         logger.error(f"{err}")
@@ -159,7 +171,7 @@ async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
                 message_id=message_id,
                 caption=HELLO_MESSAGE,
                 reply_markup=await main_kb(),
-                parse_mode="MarkdownV2"
+                parse_mode="MarkdownV2",
             )
         )
 
@@ -180,8 +192,8 @@ async def contacts(callback: types.CallbackQuery):
                 chat_id=callback.message.chat.id,
                 message_id=message_id,
                 caption=DEVS_TEXT,
-                reply_markup=await back_btn(),
-                parse_mode="MarkdownV2"
+                reply_markup=await contacts_btn(),
+                parse_mode="MarkdownV2",
             )
         )
 
@@ -203,7 +215,7 @@ async def our_products(callback: types.CallbackQuery):
                 message_id=message_id,
                 caption=OUR_PRODUCTS_TEXT,
                 reply_markup=await back_btn(),
-                parse_mode="MarkdownV2"
+                parse_mode="MarkdownV2",
             )
         )
 
@@ -225,7 +237,7 @@ async def support_me(callback: types.CallbackQuery):
                 message_id=message_id,
                 caption=SUPPORT_TEXT,
                 reply_markup=await back_btn(),
-                parse_mode="MarkdownV2"
+                parse_mode="MarkdownV2",
             )
         )
 
