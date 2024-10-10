@@ -21,8 +21,6 @@ from resources.TEXT_MESSAGES import (BUG_TEXT, DEVS_TEXT, DONE_TEXT,
 from send_data import send_messages
 from send_logs import send_log_to_dev
 from StatesGroup import GetBug, GetIdea
-
-
 async def process_admin_answer(client_id, source_message):
     try:
         image_path = "resources/header_2.png"
