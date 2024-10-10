@@ -1,5 +1,5 @@
 HELLO_MESSAGE = """
-*🍀 Hi\\! This is the DXS GROUP tech support bot\\. 🍀*
+*🍀 ツ  Hi\\! This is the DXS GROUP tech support bot\\. 🍀*
 
 _If you have found bugs and errors in our programs\\, or you have suggestions for the development of the project\\, you can send information to our team using the bot\\._
 
@@ -7,26 +7,20 @@ _If you have found bugs and errors in our programs\\, or you have suggestions fo
 """
 
 IDEA_TEXT = """
-🚀 *Now you can write your idea or suggestion for our team\\. Please indicate at the beginning the project to which your proposal relates\\.*
+💫 *Now you can write your idea or suggestion for our team\\.*\n\n_Please indicate at the beginning the project to which your proposal relates\\._
 """
 
 BUG_TEXT = """
-🍁 *Now specify what error you encountered\\. If necessary\\, you can attach screenshot or log of the error\\. Our team will fix this error if possible and contact you if necessary\\.*
+🍁 *Now specify what error you encountered\\.*\n\n_If necessary\\, you can attach screenshot or log of the error\\.\n\nOur team will fix this error if possible and contact you if necessary\\._
 """
 
 DONE_TEXT = """
 🍀 _Your request has been successfully sent to the team and will be fixed soon\\. If we have any questions\\, you will be contacted by our administration \\(\\@Night3098\\) When your issue is fixed\\, you will be notified\\. The ticket will be automatically closed_ 🍀\\.
-
-*You can return to the start menu by pressing*
-`\\/start`
 """
 
 DEVS_TEXT = """
-💬 Contacts of main developer \\:
+💬 *Contacts of main developer*\n
 
- 🔴 \\@Night3098
- 🔴 https\\:\\//discord\\.gg\\/\\#9707
- 🔴 https\\://www\\.reddit\\.com\\/user\\/DEVELOPER0x31\\/
 """
 
 OUR_PRODUCTS_TEXT = """
