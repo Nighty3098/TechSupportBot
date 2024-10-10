@@ -40,7 +40,7 @@ async def main_menu(message: Message) -> None:
                 photo,
                 caption=HELLO_MESSAGE,
                 reply_markup=await main_kb(),
-                parse_mode="Markdown",
+                parse_mode="MarkdownV2",
             )
         )
 
@@ -52,7 +52,6 @@ async def main_menu(message: Message) -> None:
         await create_table(connection)
 
         await bot.send_message(chat_id=NOTIFY_CHAT, text=message_for_dev)
-        await send_log_to_dev()
 
     except Exception as err:
         logger.error(f"{err}")
