@@ -35,7 +35,7 @@ async def main_kb():
 
         builder.adjust(2)
 
-        logger.debug("Creating user panel")
+        logger.info("Creating user panel")
 
         return builder.as_markup()
     except Exception as err:
@@ -48,7 +48,7 @@ async def back_btn():
         builder.add(types.InlineKeyboardButton(text="⮜ Back", callback_data="Back"))
         builder.adjust(1)
 
-        logger.debug("Creating back button")
+        logger.info("Creating back button")
 
         return builder.as_markup()
     except Exception as err:
@@ -84,7 +84,7 @@ async def contacts_btn():
         builder.add(types.InlineKeyboardButton(text="⮜ Back", callback_data="Back"))
         builder.adjust(2)
 
-        logger.debug("Creating contacts button")
+        logger.info("Creating contacts button")
 
         return builder.as_markup()
     except Exception as err:
