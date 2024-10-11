@@ -44,7 +44,7 @@ async def main_menu(message: Message) -> None:
             )
         )
 
-        logger.debug(f"{user_id} - main menu")
+        logger.info(f"{user_id} - main menu")
 
         message_for_dev = "New user: @" + username
 

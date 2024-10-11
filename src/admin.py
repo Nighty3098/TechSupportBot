@@ -102,7 +102,7 @@ async def set_ticket_status(message: Message):
     try:
         user_id = message.from_user.id
         admins = await get_users()
-        logger.debug(f"Loading admins list: {admins}")
+        logger.info(f"Loading admins list: {admins}")
 
         if user_id not in admins:
             logger.warning(
@@ -141,7 +141,7 @@ async def get_status(message: Message):
     try:
         user_id = message.from_user.id
         admins = await get_users()
-        logger.debug(f"Loading admins list: {admins}")
+        logger.info(f"Loading admins list: {admins}")
 
         if user_id not in admins:
             logger.warning(
@@ -181,7 +181,7 @@ async def get_tickets(message: Message):
     try:
         user_id = message.from_user.id
         admins = await get_users()
-        logger.debug(f"Loading admins list: {admins}")
+        logger.info(f"Loading admins list: {admins}")
 
         if user_id not in admins:
             logger.warning(
@@ -229,7 +229,7 @@ async def get_db(message: Message):
     try:
         user_id = message.from_user.id
         admins = await get_users()
-        logger.debug(f"Loading admins list: {admins}")
+        logger.info(f"Loading admins list: {admins}")
 
         if user_id not in admins:
             logger.warning(
@@ -259,7 +259,7 @@ async def get_db(message: Message):
     try:
         user_id = message.from_user.id
         admins = await get_users()
-        logger.debug(f"Loading admins list: {admins}")
+        logger.info(f"Loading admins list: {admins}")
 
         if user_id not in admins:
             logger.warning(
