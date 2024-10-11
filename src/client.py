@@ -26,7 +26,7 @@ async def get_users_idea(callback: types.CallbackQuery, state: FSMContext):
         global last_bot_message_id
 
         await state.set_state(GetIdea.wait_for_message)
-        logger.debug(f"{callback.message.chat.id} - idea suggest")
+        logger.info(f"{callback.message.chat.id} - idea suggest")
 
         message_id = callback.message.message_id
         last_msg = await bot.edit_message_caption(
@@ -50,7 +50,7 @@ async def get_users_bug(callback: types.CallbackQuery, state: FSMContext):
         global last_bot_message_id
 
         await state.set_state(GetBug.wait_for_message)
-        logger.debug(f"{callback.message.chat.id} - bug report")
+        logger.info(f"{callback.message.chat.id} - bug report")
 
         message_id = callback.message.message_id
 
@@ -73,7 +73,7 @@ async def get_users_bug(callback: types.CallbackQuery, state: FSMContext):
 async def user_message_idea(message: Message, state: FSMContext):
     try:
         username = message.from_user.username
-        logger.debug(f"Idea suggest from {username}: {message.text}")
+        logger.info(f"Idea suggest from {username}: {message.text}")
 
         current_datetime = datetime.datetime.now()
         responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
@@ -116,7 +116,7 @@ async def user_message_idea(message: Message, state: FSMContext):
 async def user_message_bug(message: types.Message, state: FSMContext):
     try:
         username = message.from_user.username
-        logger.debug(f"Bug report from {username}: {message.text}")
+        logger.info(f"Bug report from {username}: {message.text}")
 
         current_datetime = datetime.datetime.now()
         responsdate = current_datetime.strftime("%d-%m-%Y %H:%M:%S")
@@ -159,7 +159,7 @@ async def user_message_bug(message: types.Message, state: FSMContext):
 @dp.callback_query(F.data == "Back")
 async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
     try:
-        logger.debug(f"{callback.message.chat.id} - back button")
+        logger.info(f"{callback.message.chat.id} - back button")
         message_id = callback.message.message_id
 
         logger.info(await state.set_state(GetBug.none_state))
@@ -184,7 +184,7 @@ async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
 async def contacts(callback: types.CallbackQuery):
     try:
         user_id = callback.from_user.id
-        logger.debug(f"{user_id} - contacts")
+        logger.info(f"{user_id} - contacts")
         message_id = callback.message.message_id
 
         logger.debug(
@@ -206,7 +206,7 @@ async def contacts(callback: types.CallbackQuery):
 async def our_products(callback: types.CallbackQuery):
     try:
         user_id = callback.from_user.id
-        logger.debug(f"{user_id} - our products")
+        logger.info(f"{user_id} - our products")
         message_id = callback.message.message_id
 
         logger.debug(
@@ -228,7 +228,7 @@ async def our_products(callback: types.CallbackQuery):
 async def support_me(callback: types.CallbackQuery):
     try:
         user_id = callback.from_user.id
-        logger.debug(f"{user_id} - support me")
+        logger.info(f"{user_id} - support me")
         message_id = callback.message.message_id
 
         logger.debug(
