@@ -14,12 +14,12 @@ async def create_connection():
 
     if not os.path.exists(tech_support_dir):
         os.makedirs(tech_support_dir)
-        logger.debug(f"Created directory: {tech_support_dir}")
+        logger.info(f"Created directory: {tech_support_dir}")
 
     db_path = os.path.join(tech_support_dir, "TechSupport.db")
     try:
         connection = sqlite3.connect(db_path)
-        logger.debug(f"Connected to SQL DB at {db_path}")
+        logger.info(f"Connected to SQL DB at {db_path}")
         return connection
     except Exception as e:
         logger.error(f"Error '{e}' while connecting to SQL DB at {db_path}")
@@ -52,7 +52,7 @@ async def create_table(connection):
             )"""
         )
         connection.commit()
-        logger.debug("Tables created successfully")
+        logger.info("Tables created successfully")
     except Exception as e:
         logger.error(f"Error '{e}' while creating tables")
 
@@ -84,12 +84,12 @@ async def get_id_by_message(connection, message_value: str, date: str, user_id: 
         logger.error(f"Invalid category: {category}")
         return None
 
-    logger.debug(f"Getting id from {table_name} where message = ?, date = ?, user_id = ?")
+    logger.info(f"Getting id from {table_name} where message = ?, date = ?, user_id = ?")
 
     try:
         cursor.execute(f"SELECT id FROM {table_name} WHERE message = ? AND date = ? AND user_id = ?", (message_value, date, user_id))
         result = cursor.fetchone()
-        logger.debug(f"Query result: {result}")
+        logger.info(f"Query result: {result}")
     except Exception as e:
         logger.error(f"Error executing query: {e}")
         await send_log_to_dev()
@@ -106,12 +106,12 @@ async def update_ticket_status(connection, ticket_id: int, new_status: str, cate
         await send_log_to_dev()
         return False
 
-    logger.debug(f"Updating status for {table_name} with id = '{ticket_id}' to '{new_status}'")
+    logger.info(f"Updating status for {table_name} with id = '{ticket_id}' to '{new_status}'")
 
     try:
         cursor.execute(f"UPDATE {table_name} SET status = ? WHERE id = ?", (new_status, ticket_id))
         connection.commit()
-        logger.debug(f"Updated status for {table_name} with id = '{ticket_id}' to '{new_status}'")
+        logger.info(f"Updated status for {table_name} with id = '{ticket_id}' to '{new_status}'")
     except Exception as e:
         logger.error(f"Error updating ticket status: {e}")
         await send_log_to_dev()
@@ -127,12 +127,12 @@ async def get_user_id_by_message(connection, ticket_id: str, category: str):
         logger.error(f"Invalid category: {category}")
         return None
 
-    logger.debug(f"Getting user_id from {table_name} where id = ?")
+    logger.info(f"Getting user_id from {table_name} where id = ?")
 
     try:
         cursor.execute(f"SELECT user_id FROM {table_name} WHERE id = ?", (ticket_id,))
         result = cursor.fetchone()
-        logger.debug(f"Query result: {result}")
+        logger.info(f"Query result: {result}")
     except Exception as e:
         logger.error(f"Error executing query: {e}")
         await send_log_to_dev()
@@ -148,12 +148,12 @@ async def get_ticket_status(connection, ticket_id: str, category: str):
         logger.error(f"Invalid category: {category}")
         return None
 
-    logger.debug(f"Getting status from {table_name} where id = ?")
+    logger.info(f"Getting status from {table_name} where id = ?")
 
     try:
         cursor.execute(f"SELECT status FROM {table_name} WHERE id = ?", (ticket_id,))
         result = cursor.fetchone()
-        logger.debug(f"Query result: {result}")
+        logger.info(f"Query result: {result}")
 
         if result:
             return result[0]
