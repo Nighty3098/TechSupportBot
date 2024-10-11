@@ -35,13 +35,11 @@ async def main_menu(message: Message) -> None:
         image_path = "resources/header.png"
 
         photo = FSInputFile(image_path)
-        logger.debug(
-            await message.answer_photo(
-                photo,
-                caption=HELLO_MESSAGE,
-                reply_markup=await main_kb(),
-                parse_mode="MarkdownV2",
-            )
+        await message.answer_photo(
+            photo,
+            caption=HELLO_MESSAGE,
+            reply_markup=await main_kb(),
+            parse_mode="MarkdownV2",
         )
 
         logger.info(f"{user_id} - main menu")
