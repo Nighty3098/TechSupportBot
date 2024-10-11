@@ -91,19 +91,17 @@ async def user_message_idea(message: Message, state: FSMContext):
 
         photo = FSInputFile("resources/header.png")
 
-        logger.debug(
-            await bot.delete_message(
-                chat_id=message.chat.id, message_id=last_bot_message_id
-            )
+        await bot.delete_message(
+            chat_id=message.chat.id, message_id=last_bot_message_id
         )
-        logger.debug(
-            await message.answer_photo(
-                photo=photo,
-                caption=DONE_TEXT,
-                reply_markup=await back_btn(),
-                parse_mode="MarkdownV2",
-            )
+
+        await message.answer_photo(
+            photo=photo,
+            caption=DONE_TEXT,
+            reply_markup=await back_btn(),
+            parse_mode="MarkdownV2",
         )
+
         logger.info(await state.set_state(GetBug.none_state))
         logger.info(await state.set_state(GetIdea.none_state))
 
@@ -134,20 +132,17 @@ async def user_message_bug(message: types.Message, state: FSMContext):
 
         photo = FSInputFile("resources/header.png")
 
-        logger.debug(
-            await bot.delete_message(
-                chat_id=message.chat.id, message_id=last_bot_message_id
-            )
+        await bot.delete_message(
+            chat_id=message.chat.id, message_id=last_bot_message_id
         )
 
-        logger.debug(
-            await message.answer_photo(
-                photo=photo,
-                caption=DONE_TEXT,
-                parse_mode="MarkdownV2",
-                reply_markup=await back_btn(),
-            )
+        await message.answer_photo(
+            photo=photo,
+            caption=DONE_TEXT,
+            parse_mode="MarkdownV2",
+            reply_markup=await back_btn(),
         )
+
         logger.info(await state.set_state(GetBug.none_state))
         logger.info(await state.set_state(GetIdea.none_state))
 
@@ -165,14 +160,12 @@ async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
         logger.info(await state.set_state(GetBug.none_state))
         logger.info(await state.set_state(GetIdea.none_state))
 
-        logger.debug(
-            await bot.edit_message_caption(
-                chat_id=callback.message.chat.id,
-                message_id=message_id,
-                caption=HELLO_MESSAGE,
-                reply_markup=await main_kb(),
-                parse_mode="MarkdownV2",
-            )
+        await bot.edit_message_caption(
+            chat_id=callback.message.chat.id,
+            message_id=message_id,
+            caption=HELLO_MESSAGE,
+            reply_markup=await main_kb(),
+            parse_mode="MarkdownV2",
         )
 
     except Exception as err:
@@ -187,14 +180,12 @@ async def contacts(callback: types.CallbackQuery):
         logger.info(f"{user_id} - contacts")
         message_id = callback.message.message_id
 
-        logger.debug(
-            await bot.edit_message_caption(
-                chat_id=callback.message.chat.id,
-                message_id=message_id,
-                caption=DEVS_TEXT,
-                reply_markup=await contacts_btn(),
-                parse_mode="MarkdownV2",
-            )
+        await bot.edit_message_caption(
+            chat_id=callback.message.chat.id,
+            message_id=message_id,
+            caption=DEVS_TEXT,
+            reply_markup=await contacts_btn(),
+            parse_mode="MarkdownV2",
         )
 
     except Exception as err:
@@ -209,14 +200,12 @@ async def our_products(callback: types.CallbackQuery):
         logger.info(f"{user_id} - our products")
         message_id = callback.message.message_id
 
-        logger.debug(
-            await bot.edit_message_caption(
-                chat_id=callback.message.chat.id,
-                message_id=message_id,
-                caption=OUR_PRODUCTS_TEXT,
-                reply_markup=await back_btn(),
-                parse_mode="MarkdownV2",
-            )
+        await bot.edit_message_caption(
+            chat_id=callback.message.chat.id,
+            message_id=message_id,
+            caption=OUR_PRODUCTS_TEXT,
+            reply_markup=await back_btn(),
+            parse_mode="MarkdownV2",
         )
 
     except Exception as err:
@@ -231,14 +220,12 @@ async def support_me(callback: types.CallbackQuery):
         logger.info(f"{user_id} - support me")
         message_id = callback.message.message_id
 
-        logger.debug(
-            await bot.edit_message_caption(
-                chat_id=callback.message.chat.id,
-                message_id=message_id,
-                caption=SUPPORT_TEXT,
-                reply_markup=await back_btn(),
-                parse_mode="MarkdownV2",
-            )
+        await bot.edit_message_caption(
+            chat_id=callback.message.chat.id,
+            message_id=message_id,
+            caption=SUPPORT_TEXT,
+            reply_markup=await back_btn(),
+            parse_mode="MarkdownV2",
         )
 
     except Exception as err:
