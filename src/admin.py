@@ -29,13 +29,13 @@ async def process_admin_answer(client_id, source_message):
         photo = FSInputFile(image_path)
 
         admin_message_text = f"🔥 Message from admin:\n\n{source_message}"
-        logger.debug(
-            await bot.send_photo(
-                photo=photo,
-                chat_id=client_id,
-                caption=admin_message_text,
-            )
+        
+        await bot.send_photo(
+            photo=photo,
+            chat_id=client_id,
+            caption=admin_message_text,
         )
+        
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
@@ -52,13 +52,12 @@ async def process_ticket_status_update(ticket_id, new_status, ticket_category):
         await update_ticket_status(
             await create_connection(), ticket_id, new_status, ticket_category
         )
-        logger.debug(
-            await bot.send_photo(
-                photo=photo,
-                chat_id=client_id,
-                caption=f"🚀 The status of your ticket has been updated to:\n\n{new_status}",
-            )
+        await bot.send_photo(
+            photo=photo,
+            chat_id=client_id,
+            caption=f"🚀 The status of your ticket has been updated to:\n\n{new_status}",
         )
+
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
@@ -69,7 +68,7 @@ async def send_admin_answer(message: Message):
     try:
         user_id = message.from_user.id
         admins = await get_users()
-        logger.debug(f"Loading admins list: {admins}")
+        logger.info(f"Loading admins list: {admins}")
 
         if user_id not in admins:
             logger.warning(
@@ -90,7 +89,7 @@ async def send_admin_answer(message: Message):
 
                 asyncio.create_task(process_admin_answer(client_id, source_message))
 
-                logger.debug(await message.answer("✅ Message successfully delivered"))
+                await message.answer("✅ Message successfully delivered")
 
     except Exception as err:
         logger.error(f"{err}")
@@ -125,10 +124,9 @@ async def set_ticket_status(message: Message):
                 asyncio.create_task(
                     process_ticket_status_update(ticket_id, new_status, ticket_category)
                 )
-                logger.debug(
-                    await message.answer(
-                        "🔥 Ticket status has been successfully updated",
-                    )
+                
+                await message.answer(
+                    "🔥 Ticket status has been successfully updated",
                 )
 
     except Exception as err:
@@ -164,11 +162,9 @@ async def get_status(message: Message):
                     await create_connection(), ticket_id, ticket_category
                 )
 
-                logger.debug(
-                    await message.answer(
-                        f"The current status of the ticket is\\: {ticket_status}\n\nTo change the status enter\\:\n`\\/set_ticket_status \\| {ticket_id} \\| {ticket_category.lower()} \\| Ticket status`",
-                        parse_mode="MarkdownV2",
-                    )
+                await message.answer(
+                    f"The current status of the ticket is\\: {ticket_status}\n\nTo change the status enter\\:\n`\\/set_ticket_status \\| {ticket_id} \\| {ticket_category.lower()} \\| Ticket status`",
+                    parse_mode="MarkdownV2",
                 )
 
     except Exception as err:
@@ -204,20 +200,18 @@ async def get_tickets(message: Message):
                 f.write(full_message)
 
             if not full_message:
-                logger.debug(await message.answer("No data available"))
+                logger.info(await message.answer("No data available"))
             else:
-                logger.debug(
-                    await bot.send_chat_action(
-                        action="upload_document", chat_id=user_id
-                    )
+                await bot.send_chat_action(
+                    action="upload_document", chat_id=user_id
                 )
-                logger.debug(
-                    await message.answer_document(
-                        FSInputFile("AllTickets.txt"),
-                        caption="👾 *_All tickets_* 👾",
-                        parse_mode="MarkdownV2",
-                    )
+                
+                await message.answer_document(
+                    FSInputFile("AllTickets.txt"),
+                    caption="👾 *_All tickets_* 👾",
+                    parse_mode="MarkdownV2",
                 )
+                
 
     except Exception as err:
         logger.error(f"{err}")
@@ -241,13 +235,11 @@ async def get_db(message: Message):
             try:
                 await bot.send_chat_action(action="upload_document", chat_id=user_id)
                 with open(data, "rb") as db_file:
-                    logger.debug(
-                        await message.answer_document(
-                            FSInputFile(data), caption="👾 DXS GROUP DB 👾"
-                        )
+                    await message.answer_document(
+                        FSInputFile(data), caption="👾 DXS GROUP DB 👾"
                     )
             except FileNotFoundError:
-                logger.debug(await message.answer("DB File not found."))
+                await message.answer("DB File not found.")
 
     except Exception as err:
         logger.error(f"{err}")
@@ -269,12 +261,10 @@ async def get_db(message: Message):
             image_path = "resources/header_2.png"
 
             logger.warning(f"User: {message.from_user.username} : {user_id} - help")
-            logger.debug(
-                await message.answer_photo(
-                    photo=FSInputFile(image_path),
-                    caption=HELP_MESSAGE,
-                    parse_mode="MarkdownV2",
-                )
+            await message.answer_photo(
+                photo=FSInputFile(image_path),
+                caption=HELP_MESSAGE,
+                parse_mode="MarkdownV2",
             )
 
     except Exception as err:
