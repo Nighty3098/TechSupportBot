@@ -1,5 +1,5 @@
 HELLO_MESSAGE = """
-*🍀 ツ  Hi\\! This is the DXS GROUP tech support bot\\. 🍀*
+*🍀 ツ  Hi\\! This is the N9 GROUP tech support bot\\. 🍀*
 
 _If you have found bugs and errors in our programs\\, or you have suggestions for the development of the project\\, you can send information to our team using the bot\\._
 
