@@ -1,7 +1,7 @@
 <br><br><br>
 
 <div  align="center">
-  <img width="90%" alt="logo" src="imgs/TechSupport.png">
+  <img src="https://github.com/user-attachments/assets/b5555f59-48ae-4101-8180-7872cca28751" />
   <br>
   <br>
   <img src="https://github.com/Nighty3098/DevIcons/blob/main/badges/badges_python.png?raw=true" width="70px"/>
