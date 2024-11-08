@@ -10,7 +10,7 @@
 
 <br><br>
 
-<h1 align="center">TechSupport Bot for DXS_GROUP</h1>
+<h1 align="center">TechSupport Bot for N9-GROUP</h1>
 
 <br><br>
 
