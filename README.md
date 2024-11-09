@@ -1,16 +1,34 @@
-<br><br><br>
+<br>
+<h1 align="center">TechSupport Bot for N9-GROUP</h1>
+<br><br>
 
 <div  align="center">
   <img width="90%" alt="logo" src="imgs/TechSupport.png">
   <br>
   <br>
-  <img src="https://github.com/Nighty3098/DevIcons/blob/main/badges/badges_python.png?raw=true" width="70px"/>
-  <img src="https://github.com/Nighty3098/DevIcons/blob/main/badges/badges_telegram.png?raw=true" width="70px"/>
+  <img src="https://github.com/Nighty3098/DevIcons/blob/main/badges/badges_python.png?raw=true" width="50px"/>
+  <img src="https://github.com/Nighty3098/DevIcons/blob/main/badges/badges_telegram.png?raw=true" width="50px"/>
 </div>
 
 <br><br>
 
-<h1 align="center">TechSupport Bot for N9-GROUP</h1>
+> [!TIP]
+> All data and links to user attachments are stored in a sqlite database
+
+### Installing
+
+```
+git clone https://github.com/Nighty3098/TechSupportBot
+cd TechSupportBot
+python3 -m venv SupportBot
+source SupportBot/bin/activate
+pip3 install -r requirements.txt
+cd src
+SUPPORT_TOKEN="BOT TOKEN" python3 main.py
+```
+
+> [!IMPORTANT]
+> In the config.py file, set the developer id and chat id. Add a bot to the chat and make it an admin
 
 <br><br>
 
@@ -58,24 +76,6 @@
 `/help`
 
 <br><br>
-
-> [!TIP]
-> All data and links to user attachments are stored in a sqlite database
-
-### Installing
-
-```
-git clone https://github.com/Nighty3098/TechSupportBot
-cd TechSupportBot
-python3 -m venv SupportBot
-source SupportBot/bin/activate
-pip3 install -r requirements.txt
-cd src
-SUPPORT_TOKEN="BOT TOKEN" python3 main.py
-```
-
-> [!IMPORTANT]
-> In the config.py file, set the developer id and chat id. Add a bot to the chat and make it an admin
 
 <details>
 <summary align="center">Imgs</summary>
