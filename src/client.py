@@ -95,7 +95,7 @@ async def user_message_idea(message: Message, state: FSMContext):
 
         asyncio.create_task(send_messages(message, username, "IDEA", responsdate))
 
-        photo = FSInputFile("resources/header.png")
+        photo = FSInputFile("resources/header_2.png")
 
         await bot.delete_message(
             chat_id=message.chat.id, message_id=last_bot_message_id
@@ -136,7 +136,7 @@ async def user_message_bug(message: types.Message, state: FSMContext):
 
         asyncio.create_task(send_messages(message, username, "BUG", responsdate))
 
-        photo = FSInputFile("resources/header.png")
+        photo = FSInputFile("resources/header_2.png")
 
         await bot.delete_message(
             chat_id=message.chat.id, message_id=last_bot_message_id
