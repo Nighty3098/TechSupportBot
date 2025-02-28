@@ -16,88 +16,76 @@ DEFAULT_CAPTION = "No description provided."
 
 
 async def send_messages(message: types.Message, username: str, status: str, date: str):
-    forward_text = ""
+    """Send user report to channel with appropriate formatting and status tracking."""
+    status_lower = status.lower()
     channel_message = (
         f"🗒️ New report from @{username}\n"
-        f"⚪ Category: {status}\n"
-        f"🚀 To reply to a user enter the command: \n"
-        f"/admin_answer | {message.from_user.id} | your message\n"
-        f"🚀 To change the status of a ticket, enter the command: \n"
+        f"⚪ Category: {status}\n\n"
+        f"🚀 To reply to user:\n/admin_answer | {message.from_user.id} | your message\n"
+        f"🚀 To change ticket status:\n/set_ticket_status | [ID] | {status_lower} | status\n"
     )
 
-    if message.text:
-        forward_text += message.text
-        message_id = await get_id_by_message(
-            await create_connection(),
-            forward_text,
-            date,
-            message.from_user.id,
-            status.lower(),
-        )
-        channel_message += (
-            f"/set_ticket_status | {message_id} | {status.lower()} | status\n"
-        )
+    content = ""
+    media_object = None
+    media_type = "text"
 
-    if message.photo:
-        photo = message.photo[-1]
-        caption = message.caption if message.caption else DEFAULT_CAPTION
-        message_id = await get_id_by_message(
-            await create_connection(),
-            caption,
-            date,
-            message.from_user.id,
-            status.lower(),
-        )
-        channel_message += (
-            f"/set_ticket_status | {message_id} | {status.lower()} | status\n"
-        )
-        channel_message += f"\n🔥 Report: \n\n{caption}"
-        await bot.send_photo(
-            chat_id=CHANNEL,
-            photo=photo.file_id,
-            caption=channel_message,
-        )
+    with await create_connection() as conn:
+        try:
+            if message.text:
+                content = message.text
+                media_type = "text"
+            elif message.photo:
+                media_object = message.photo[-1]
+                content = message.caption or DEFAULT_CAPTION
+                media_type = "photo"
+            elif message.document:
+                media_object = message.document
+                content = message.caption or DEFAULT_CAPTION
+                media_type = "document"
+            elif message.video:
+                media_object = message.video
+                content = message.caption or DEFAULT_CAPTION
+                media_type = "video"
+            else:
+                logger.warning(f"Unsupported message type from {username}")
+                return
 
-    elif message.document:
-        document = message.document
-        caption = message.caption if message.caption else DEFAULT_CAPTION
-        message_id = await get_id_by_message(
-            await create_connection(),
-            caption,
-            date,
-            message.from_user.id,
-            status.lower(),
-        )
-        channel_message += (
-            f"/set_ticket_status | {message_id} | {status.lower()} | status\n"
-        )
-        channel_message += f"\n🔥 Report: \n\n{caption}"
-        await bot.send_document(
-            chat_id=CHANNEL,
-            document=document.file_id,
-            caption=channel_message,
-        )
+            message_id = await get_id_by_message(
+                conn, content, date, message.from_user.id, status_lower
+            )
 
-    elif message.video:
-        video = message.video
-        caption = message.caption if message.caption else DEFAULT_CAPTION
-        message_id = await get_id_by_message(
-            await create_connection(),
-            caption,
-            date,
-            message.from_user.id,
-            status.lower(),
-        )
-        channel_message += (
-            f"/set_ticket_status | {message_id} | {status.lower()} | status\n"
-        )
-        channel_message += f"\n🔥 Report: \n\n{caption}"
-        await bot.send_video(
-            chat_id=CHANNEL,
-            video=video.file_id,
-            caption=channel_message,
-        )
+            logger.debug(f"Retrieved message ID: {message_id} for {media_type} content")
 
-    else:
-        channel_message += f"\n🔥 Report: \n\n{forward_text}"
-        await bot.send_message(chat_id=CHANNEL, text=channel_message)
+            if not message_id:
+                logger.error(
+                    f"Failed to get ID for {media_type} message from {username}"
+                )
+                return
+
+            channel_message = channel_message.replace("[ID]", str(message_id))
+            channel_message += f"\n🔥 Report: \n\n{content}"
+
+            if media_type == "text":
+                await bot.send_message(chat_id=CHANNEL, text=channel_message)
+                logger.info(f"Text message sent to channel for user {username}")
+            else:
+                send_method = {
+                    "photo": bot.send_photo,
+                    "document": bot.send_document,
+                    "video": bot.send_video,
+                }[media_type]
+
+                await send_method(
+                    chat_id=CHANNEL,
+                    **{media_type: media_object.file_id},
+                    caption=channel_message,
+                )
+                logger.info(
+                    f"{media_type.capitalize()} message sent to channel for user {username}"
+                )
+
+        except Exception as e:
+            logger.critical(
+                f"Error processing {media_type} message: {str(e)}", exc_info=True
+            )
+            await send_log_to_dev()
