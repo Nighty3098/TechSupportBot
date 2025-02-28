@@ -9,15 +9,28 @@ from aiogram.types import FSInputFile, Message
 from aiogram.types.input_file import InputFile
 
 from config import CHANNEL, DEVS, TOKEN, bot, data, dp, log_file, logger
-from db.db import (create_connection, create_table, get_all_tickets,
-                   get_ticket_status, get_user_id_by_message, save_report_data,
-                   update_ticket_status)
+from db.db import (
+    create_connection,
+    create_table,
+    get_all_tickets,
+    get_ticket_status,
+    get_user_id_by_message,
+    save_report_data,
+    update_ticket_status,
+)
 from get_admins_id import get_users
 from kb_builder import back_btn, main_kb
-from resources.TEXT_MESSAGES import (BUG_TEXT, DEVS_TEXT, DONE_TEXT,
-                                     HELLO_MESSAGE, HELP_MESSAGE, IDEA_TEXT,
-                                     INCORRECT_INPUT_FORMAT_ERROR,
-                                     OUR_PRODUCTS_TEXT, SUPPORT_TEXT)
+from resources.TEXT_MESSAGES import (
+    BUG_TEXT,
+    DEVS_TEXT,
+    DONE_TEXT,
+    HELLO_MESSAGE,
+    HELP_MESSAGE,
+    IDEA_TEXT,
+    INCORRECT_INPUT_FORMAT_ERROR,
+    OUR_PRODUCTS_TEXT,
+    SUPPORT_TEXT,
+)
 from send_data import send_messages
 from send_logs import send_log_to_dev
 from StatesGroup import GetBug, GetIdea
@@ -29,13 +42,13 @@ async def process_admin_answer(client_id, source_message):
         photo = FSInputFile(image_path)
 
         admin_message_text = f"🔥 Message from admin:\n\n{source_message}"
-        
+
         await bot.send_photo(
             photo=photo,
             chat_id=client_id,
             caption=admin_message_text,
         )
-        
+
     except Exception as err:
         logger.error(f"{err}")
         await send_log_to_dev()
@@ -124,7 +137,7 @@ async def set_ticket_status(message: Message):
                 asyncio.create_task(
                     process_ticket_status_update(ticket_id, new_status, ticket_category)
                 )
-                
+
                 await message.answer(
                     "🔥 Ticket status has been successfully updated",
                 )
@@ -202,16 +215,13 @@ async def get_tickets(message: Message):
             if not full_message:
                 logger.info(await message.answer("No data available"))
             else:
-                await bot.send_chat_action(
-                    action="upload_document", chat_id=user_id
-                )
-                
+                await bot.send_chat_action(action="upload_document", chat_id=user_id)
+
                 await message.answer_document(
                     FSInputFile("AllTickets.txt"),
                     caption="👾 *_All tickets_* 👾",
                     parse_mode="MarkdownV2",
                 )
-                
 
     except Exception as err:
         logger.error(f"{err}")

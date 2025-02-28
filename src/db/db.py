@@ -4,9 +4,11 @@ import os
 import sqlite3
 
 from aiogram import types
+
 from config import bot, data, home_dir, logger
 from db.check_data import get_data_url
 from send_logs import send_log_to_dev
+
 
 async def create_connection():
     """Creates connection to SQL DB"""
@@ -24,6 +26,7 @@ async def create_connection():
     except Exception as e:
         logger.error(f"Error '{e}' while connecting to SQL DB at {db_path}")
         return None
+
 
 async def create_table(connection):
     """Create tables if they do not exist"""
@@ -56,7 +59,10 @@ async def create_table(connection):
     except Exception as e:
         logger.error(f"Error '{e}' while creating tables")
 
-async def save_report_data(connection, username: str, user_id: str, message: types.Message, label: str):
+
+async def save_report_data(
+    connection, username: str, user_id: str, message: types.Message, label: str
+):
     """Saving reports to DB"""
     cursor = connection.cursor()
     files = await get_data_url(message)
@@ -76,18 +82,28 @@ async def save_report_data(connection, username: str, user_id: str, message: typ
 
     connection.commit()
 
-async def get_id_by_message(connection, message_value: str, date: str, user_id: str, category: str):
+
+async def get_id_by_message(
+    connection, message_value: str, date: str, user_id: str, category: str
+):
     cursor = connection.cursor()
-    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(category.lower())
+    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(
+        category.lower()
+    )
 
     if table_name is None:
         logger.error(f"Invalid category: {category}")
         return None
 
-    logger.info(f"Getting id from {table_name} where message = ?, date = ?, user_id = ?")
+    logger.info(
+        f"Getting id from {table_name} where message = ?, date = ?, user_id = ?"
+    )
 
     try:
-        cursor.execute(f"SELECT id FROM {table_name} WHERE message = ? AND date = ? AND user_id = ?", (message_value, date, user_id))
+        cursor.execute(
+            f"SELECT id FROM {table_name} WHERE message = ? AND date = ? AND user_id = ?",
+            (message_value, date, user_id),
+        )
         result = cursor.fetchone()
         logger.info(f"Query result: {result}")
     except Exception as e:
@@ -97,21 +113,32 @@ async def get_id_by_message(connection, message_value: str, date: str, user_id: 
 
     return result[0] if result else None
 
-async def update_ticket_status(connection, ticket_id: int, new_status: str, category: str):
+
+async def update_ticket_status(
+    connection, ticket_id: int, new_status: str, category: str
+):
     cursor = connection.cursor()
-    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(category.lower())
+    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(
+        category.lower()
+    )
 
     if table_name is None:
         logger.error(f"Invalid category: {category}")
         await send_log_to_dev()
         return False
 
-    logger.info(f"Updating status for {table_name} with id = '{ticket_id}' to '{new_status}'")
+    logger.info(
+        f"Updating status for {table_name} with id = '{ticket_id}' to '{new_status}'"
+    )
 
     try:
-        cursor.execute(f"UPDATE {table_name} SET status = ? WHERE id = ?", (new_status, ticket_id))
+        cursor.execute(
+            f"UPDATE {table_name} SET status = ? WHERE id = ?", (new_status, ticket_id)
+        )
         connection.commit()
-        logger.info(f"Updated status for {table_name} with id = '{ticket_id}' to '{new_status}'")
+        logger.info(
+            f"Updated status for {table_name} with id = '{ticket_id}' to '{new_status}'"
+        )
     except Exception as e:
         logger.error(f"Error updating ticket status: {e}")
         await send_log_to_dev()
@@ -119,9 +146,12 @@ async def update_ticket_status(connection, ticket_id: int, new_status: str, cate
 
     return True
 
+
 async def get_user_id_by_message(connection, ticket_id: str, category: str):
     cursor = connection.cursor()
-    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(category.lower())
+    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(
+        category.lower()
+    )
 
     if table_name is None:
         logger.error(f"Invalid category: {category}")
@@ -140,9 +170,12 @@ async def get_user_id_by_message(connection, ticket_id: str, category: str):
 
     return result[0] if result else None
 
+
 async def get_ticket_status(connection, ticket_id: str, category: str):
     cursor = connection.cursor()
-    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(category.lower())
+    table_name = {"bug": "bugs", "idea": "suggestions", "bugs": "bugs"}.get(
+        category.lower()
+    )
 
     if table_name is None:
         logger.error(f"Invalid category: {category}")
@@ -164,6 +197,7 @@ async def get_ticket_status(connection, ticket_id: str, category: str):
         logger.error(f"Error executing query: {e}")
         await send_log_to_dev()
         return None
+
 
 async def get_all_tickets(connection):
     tickets = []
