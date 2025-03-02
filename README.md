@@ -1,13 +1,10 @@
 <br>
-<h1 align="center">TechSupport Bot for N9-GROUP</h1>
+<h1 align="center">TechSupport Bot</h1>
 <br><br>
 
 <div  align="center">
-  <img src="https://github.com/user-attachments/assets/b5555f59-48ae-4101-8180-7872cca28751" />
+  <img src="https://github.com/user-attachments/assets/d13b978c-9f0a-40db-af93-fb6295776305" width="40%" />
   <br>
-  <br>
-  <img src="https://github.com/Nighty3098/DevIcons/blob/main/badges/badges_python.png?raw=true" width="50px"/>
-  <img src="https://github.com/Nighty3098/DevIcons/blob/main/badges/badges_telegram.png?raw=true" width="50px"/>
 </div>
 
 <br><br>
