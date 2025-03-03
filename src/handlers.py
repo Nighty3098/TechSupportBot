@@ -2,38 +2,16 @@ import asyncio
 import json
 import logging
 
-from aiogram import F, handlers, types
-from aiogram.filters import CommandStart, Filter
-from aiogram.fsm.context import FSMContext
+from aiogram.filters import CommandStart
 from aiogram.types import FSInputFile, Message
-from aiogram.types.input_file import InputFile
 
-from admin import send_admin_answer
-from client import (
-    back_to_menu,
-    contacts,
-    get_users_bug,
-    get_users_idea,
-    support_me,
-    user_message_bug,
-    user_message_idea,
-)
-from config import CHANNEL, NOTIFY_CHAT, TOKEN, bot, data, dp, log_file, logger
-from db.check_for_qsl_injection import is_sql_injection_attempt
-from db.db import create_connection, create_table, save_report_data
-from kb_builder import back_btn, main_kb
+from config import NOTIFY_CHAT, bot, dp, logger
+from db.db import create_connection, create_table
+from kb_builder import main_kb
 from resources.TEXT_MESSAGES import (
-    BUG_TEXT,
-    DEVS_TEXT,
-    DONE_TEXT,
     HELLO_MESSAGE,
-    IDEA_TEXT,
-    OUR_PRODUCTS_TEXT,
-    SUPPORT_TEXT,
 )
-from send_data import send_messages
 from send_logs import send_log_to_dev
-from StatesGroup import GetBug, GetIdea
 
 
 @dp.message(CommandStart())

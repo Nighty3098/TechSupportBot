@@ -3,7 +3,7 @@ import asyncio
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from config import CHANNEL, DEVS, bot, data, dp, log_file, logger
+from config import logger
 
 
 async def main_kb():
@@ -29,7 +29,7 @@ async def main_kb():
         )
         builder.add(
             types.InlineKeyboardButton(
-                text="🛠️ Order programme development 🛠️", url="https://t.me/night3098"
+                text="🛠️ Order app development 🛠️", url="https://t.me/night3098"
             )
         )
 
