@@ -1,9 +1,8 @@
 import asyncio
+from typing import Optional, Dict, Any
 
-import requests
 from aiogram import types
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message
 
 from config import CHANNEL, NOTIFY_CHAT, bot, dp, logger
@@ -14,9 +13,22 @@ from send_logs import send_log_to_dev
 
 DEFAULT_CAPTION = "No description provided."
 
+MEDIA_TYPES = {
+    "photo": {"method": bot.send_photo, "field": "photo"},
+    "document": {"method": bot.send_document, "field": "document"},
+    "video": {"method": bot.send_video, "field": "video"},
+}
 
-async def send_messages(message: types.Message, username: str, status: str, date: str):
-    """Send user report to channel with appropriate formatting and status tracking."""
+async def send_messages(message: types.Message, username: str, status: str, date: str) -> None:
+    """
+    Sends the user's report to the channel with the appropriate formatting and status tracking.
+
+    Args:
+        message (types.Message): A message from the user.
+        username (user): The user's name.
+        status (str): The status of the report.
+        date (str): The date when the report was created.
+    """
     status_lower = status.lower()
     channel_message = (
         f"🗒️ New report from @{username}\n"
@@ -25,67 +37,72 @@ async def send_messages(message: types.Message, username: str, status: str, date
         f"🚀 To change ticket status:\n/set_ticket_status | [ID] | {status_lower} | status\n"
     )
 
-    content = ""
-    media_object = None
-    media_type = "text"
+    content, media_object, media_type = await _extract_message_content(message)
+    if not content:
+        logger.warning(f"Unsupported message type from {username}")
+        return
 
-    with await create_connection() as conn:
+    async with create_connection() as conn:
         try:
-            if message.text:
-                content = message.text
-                media_type = "text"
-            elif message.photo:
-                media_object = message.photo[-1]
-                content = message.caption or DEFAULT_CAPTION
-                media_type = "photo"
-            elif message.document:
-                media_object = message.document
-                content = message.caption or DEFAULT_CAPTION
-                media_type = "document"
-            elif message.video:
-                media_object = message.video
-                content = message.caption or DEFAULT_CAPTION
-                media_type = "video"
-            else:
-                logger.warning(f"Unsupported message type from {username}")
-                return
-
             message_id = await get_id_by_message(
                 conn, content, date, message.from_user.id, status_lower
             )
-
-            logger.debug(f"Retrieved message ID: {message_id} for {media_type} content")
-
             if not message_id:
-                logger.error(
-                    f"Failed to get ID for {media_type} message from {username}"
-                )
+                logger.error(f"Failed to get ID for {media_type} message from {username}")
                 return
 
             channel_message = channel_message.replace("[ID]", str(message_id))
             channel_message += f"\n🔥 Report: \n\n{content}"
 
-            if media_type == "text":
-                await bot.send_message(chat_id=CHANNEL, text=channel_message)
-                logger.info(f"Text message sent to channel for user {username}")
-            else:
-                send_method = {
-                    "photo": bot.send_photo,
-                    "document": bot.send_document,
-                    "video": bot.send_video,
-                }[media_type]
-
-                await send_method(
-                    chat_id=CHANNEL,
-                    **{media_type: media_object.file_id},
-                    caption=channel_message,
-                )
-                logger.info(
-                    f"{media_type.capitalize()} message sent to channel for user {username}"
-                )
-
+            await _send_to_channel(media_type, media_object, channel_message, username)
         except Exception as e:
-            logger.critical(
-                f"Error processing {media_type} message: {str(e)}", exc_info=True
-            )
+            logger.critical(f"Error processing {media_type} message: {str(e)}", exc_info=True)
             await send_log_to_dev()
+
+async def _extract_message_content(message: types.Message) -> tuple[str, Optional[Any], str]:
+    """
+    Extracts the content and media type from the message.
+
+    Args:
+        message (types.Message): A message from the user.
+
+    Returns:
+        tuple[std, Optional[Any], str]: Content, media object, and media type.
+    """
+    if message.text:
+        return message.text, None, "text"
+    elif message.photo:
+        return message.caption or DEFAULT_CAPTION, message.photo[-1], "photo"
+    elif message.document:
+        return message.caption or DEFAULT_CAPTION, message.document, "document"
+    elif message.video:
+        return message.caption or DEFAULT_CAPTION, message.video, "video"
+    return "", None, "unknown"
+
+async def _send_to_channel(
+    media_type: str, media_object: Optional[Any], channel_message: str, username: str
+) -> None:
+    """
+    Sends a message to the channel depending on the type of media.
+
+    Args:
+        media_type (str): Media type (text, photo, document, video).
+        media_object (Optional[Any]): A media object (if any).
+        channel_message (str): The text of the message.
+        username (user): The user's name.
+    """
+    if media_type == "text":
+        await bot.send_message(chat_id=CHANNEL, text=channel_message)
+        logger.info(f"Text message sent to channel for user {username}")
+    else:
+        method_info = MEDIA_TYPES.get(media_type)
+        if not method_info:
+            logger.warning(f"Unsupported media type: {media_type}")
+            return
+
+        await method_info["method"](
+            chat_id=CHANNEL,
+            **{method_info["field"]: media_object.file_id},
+            caption=channel_message,
+        )
+        logger.info(f"{media_type.capitalize()} message sent to channel for user {username}")
