@@ -9,3 +9,5 @@ src/output.txt
 src/AllTickets.txt
 
 /src/db/__pycache__
+.env
+data/TechSupport.db

@@ -30,7 +30,7 @@ async def main_menu(message: Message) -> None:
         username = member.user.username
 
         await message.answer_photo(
-            photo=FSInputFile("resources/header_2.png"),
+            photo=FSInputFile("src/resources/header_2.png"),
             caption=HELLO_MESSAGE,
             reply_markup=await main_kb(),
             parse_mode="MarkdownV2",
