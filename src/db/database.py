@@ -7,17 +7,21 @@ from sqlalchemy.pool import NullPool
 from config import home_dir, logger
 from db.models import Base
 
-tech_support_dir = os.path.join(home_dir, "TechSupport")
+# Создаем директорию для базы данных, если она не существует
+tech_support_dir = os.path.join(home_dir, "data")
 os.makedirs(tech_support_dir, exist_ok=True)
 
+# Путь к базе данных
 DATABASE_URL = f"sqlite+aiosqlite:///{os.path.join(tech_support_dir, 'TechSupport.db')}"
 
+# Создаем асинхронный движок
 engine = create_async_engine(
     DATABASE_URL,
     echo=False,
     poolclass=NullPool,
 )
 
+# Создаем фабрику сессий
 async_session_maker = async_sessionmaker(
     engine,
     class_=AsyncSession,
@@ -26,6 +30,7 @@ async_session_maker = async_sessionmaker(
 
 
 async def init_db() -> None:
+    """Инициализация базы данных"""
     try:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
@@ -36,6 +41,7 @@ async def init_db() -> None:
 
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
+    """Получение сессии базы данных"""
     async with async_session_maker() as session:
         try:
             yield session

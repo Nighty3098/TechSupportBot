@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: tech_support_bot
+    volumes:
+      - ./data:/app/data  # Для сохранения базы данных
+      - ./src:/app/src    # Для разработки (можно убрать в продакшене)
+      - ./src/resources:/app/src/resources  # Монтируем ресурсы
+    env_file:
+      - .env
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Moscow  # Устанавливаем часовой пояс 
