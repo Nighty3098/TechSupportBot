@@ -1,19 +1,40 @@
 import asyncio
-
-from aiogram import Bot
-from aiogram.dispatcher.dispatcher import Dispatcher
+import logging
+import sys
+from aiogram import Bot, Dispatcher
+from aiogram.enums import ParseMode
+from aiogram.client.default import DefaultBotProperties
+from dotenv import load_dotenv
 from setproctitle import setproctitle
 
-from db.db import create_connection, create_table
-from handlers import bot, dp
+from src.config import TOKEN
+from src.handlers import register_handlers
+from src.db.database import init_db
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-async def main() -> None:
-    connection = await create_connection()
-    await create_table(connection)
+load_dotenv()
 
-    await dp.start_polling(bot)
-
+async def main():
+    try:
+        await init_db()
+        
+        bot = Bot(
+            token=TOKEN,
+            default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2)
+        )
+        dp = Dispatcher()
+        
+        # Регистрируем обработчики
+        register_handlers(dp)
+        
+        logger.info("Starting bot...")
+        await dp.start_polling(bot)
+        
+    except Exception as e:
+        logger.error(f"Error in main: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     setproctitle("TechSupportBot")
