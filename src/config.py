@@ -5,26 +5,19 @@ import loguru
 import pretty_errors
 from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
+from dotenv import dotenv_values, load_dotenv
 
-"""
-Only for linux or mac
-"""
+load_dotenv()
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "../.env"))
+
 home_dir = os.environ["HOME"]
-TOKEN = os.getenv("SUPPORT_TOKEN")
+
+TOKEN = os.getenv("BOT_TOKEN")
+CHANNEL = os.getenv("CHANNEL")
+NOTIFY_CHAT = os.getenv("NOTIFY_CHAT")
+DEVS = os.getenv("DEVS").split(",")
+
 log_file = home_dir + "/logs/TechSupport.log"
-data = home_dir + "/TechSupport/TechSupport.db"
-
-"""
-for windows:
-TOKEN = "TOKEN"
-log_file = "logs/TechSupport.log"
-data = TechSupport.db"
-"""
-
-DEVS = ["1660218648"]
-CHANNEL = "-1002237746780"
-
-NOTIFY_CHAT = "1660218648"
 
 bot = Bot(TOKEN)
 dp = Dispatcher()

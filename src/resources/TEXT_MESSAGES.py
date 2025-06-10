@@ -52,7 +52,4 @@ HELP_MESSAGE = """
 🟢 _Get all tickets from the database_
 🚀 `\\/get_all_tickets`
 
-🟢 _Get DB file_
-🚀 `\\/get_db`
-
 """

@@ -1,91 +1,121 @@
-<br>
-<h1 align="center">TechSupport Bot</h1>
-<br><br>
+![](header.png)
 
-<div  align="center">
-  <img src="https://github.com/user-attachments/assets/d13b978c-9f0a-40db-af93-fb6295776305" width="40%" />
-  <br>
-</div>
+# `🌿 TECH SUPPORT BOT`
 
-<br><br>
+A Telegram bot for technical support and bug tracking system.
 
-> [!TIP]
-> All data and links to user attachments are stored in a sqlite database
+## Features
 
-### Installing
+### User Features
+- Submit bug reports
+- Submit feature suggestions
+- Track ticket status
+- View help information
+- View developer information
+- View product information
 
+### Admin Features
+- View all tickets
+- Update ticket status
+- Send messages to users
+- Get ticket status
+- Manage bug reports and suggestions
+
+## Commands
+
+### User Commands
+- `/start` - Start the bot and show main menu
+- `/help` - Show help information
+- `/devs` - Show developer information
+- `/products` - Show product information
+
+### Admin Commands
+- `/help` - Show admin help information
+- `/get_all_tickets` - Get a list of all tickets
+- `/get_ticket_status | <ticket_id> | <category>` - Get status of a specific ticket
+- `/set_ticket_status | <ticket_id> | <category> | <new_status>` - Update ticket status
+- `/admin_answer | <client_id> | <message>` - Send a message to a user
+
+## Installation
+
+### Prerequisites
+- Python 3.13+
+- PostgreSQL 15+
+- Docker and Docker Compose
+
+### Environment Variables
+Create a `.env` file with the following variables:
+```env
+BOT_TOKEN=your_telegram_bot_token
+CHANNEL=your_telegram_channel_id
+DEVS=your_telegram_dev_chat_id
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=tech_support
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
 ```
-git clone https://github.com/Nighty3098/TechSupportBot
+
+### Docker Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/TechSupportBot.git
 cd TechSupportBot
-python3 -m venv SupportBot
-source SupportBot/bin/activate
-pip3 install -r requirements.txt
-cd src
-SUPPORT_TOKEN="BOT TOKEN" python3 main.py
 ```
 
-> [!IMPORTANT]
-> In the config.py file, set the developer id and chat id. Add a bot to the chat and make it an admin
+2. Build and start the containers:
+```bash
+docker-compose up --build
+```
 
-<br><br>
+### Manual Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/TechSupportBot.git
+cd TechSupportBot
+```
 
-### Functional
+2. Create and activate virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-- Menu items:
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-  - sending bug report
-  - submit a development proposal
-  - contacts
-  - support the team
-  - order development
+4. Run the bot:
+```bash
+python src/main.py
+```
 
-- User features:
+## Project Structure
+```
+TechSupportBot/
+├── src/
+│   ├── admin.py           # Admin command handlers
+│   ├── config.py          # Configuration settings
+│   ├── db/                # Database related files
+│   │   ├── crud.py        # Database operations
+│   │   ├── database.py    # Database connection
+│   │   └── models.py      # Database models
+│   ├── handlers/          # User command handlers
+│   ├── kb_builder.py      # Keyboard builder
+│   ├── main.py           # Main application file
+│   └── resources/        # Static resources
+├── docker-compose.yml    # Docker configuration
+├── Dockerfile           # Docker build file
+└── requirements.txt     # Python dependencies
+```
 
-  - sending tickets
-  - receiving notifications about ticket status changes
-  - receiving notifications from the developer
+## Contributing
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-- Opportunities for developer:
-  - tracking tickets in a separate chat room
-  - ticket status change
-  - sending a notification to the user
-
-<br><br><br>
-
-### Commands for admin
-
-#### Set ticket status (user will be notified)
-`/set_ticket_status | ticket id | ticket category | ticket status`
-
-#### View the category of a certain ticket
-`/get_ticket_status | ticket id | ticket category`
-
-#### Send notification to user
-`/admin_answer | user id (can be taken from the database) | message for user`
-
-#### Get all tickets from the database
-`/get_all_tickets`
-
-#### Get DB file
-`/get_db`
-
-#### Brief documentation on working with the tech support bot for admins
-`/help`
-
-<br><br>
-
-<details>
-<summary align="center">Imgs</summary>
-<div align="center">
-    <img src="imgs/1.png" width="60%" />
-    <img src="imgs/2.png" width="60%" />
-    <img src="imgs/3.png" width="60%" />
-    <img src="imgs/4.png" width="60%" />
-    <img src="imgs/5.png" width="60%" />
-    <img src="imgs/6.png" width="60%" />
-    <img src="imgs/7.png" width="60%" />
-    <img src="imgs/8.png" width="60%" />
-    <img src="imgs/9.png" width="60%" />
-</div>
-</details>
-<br><br>
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.

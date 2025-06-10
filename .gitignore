@@ -7,4 +7,7 @@ src/TechSupport.db
 src/db/__pycache__/check_for_qsl_injection.cpython-312.pyc
 src/output.txt
 src/AllTickets.txt
-/src/db
+
+/src/db/__pycache__
+.env
+data/TechSupport.db
