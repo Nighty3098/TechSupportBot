@@ -26,6 +26,7 @@ async def main():
         )
         dp = Dispatcher()
         
+        # Регистрируем обработчики
         register_handlers(dp)
         
         logger.info("Starting bot...")

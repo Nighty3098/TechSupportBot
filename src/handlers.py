@@ -20,6 +20,7 @@ from client import (
     user_message_idea,
 )
 from StatesGroup import GetBug, GetIdea
+from admin import register_admin_handlers
 
 
 async def main_menu(message: Message) -> None:
@@ -62,3 +63,6 @@ def register_handlers(dp: Dispatcher) -> None:
     # Обработчики сообщений
     dp.message.register(user_message_idea, GetIdea.wait_for_message)
     dp.message.register(user_message_bug, GetBug.wait_for_message)
+
+    # Регистрация обработчиков администратора
+    register_admin_handlers(dp)

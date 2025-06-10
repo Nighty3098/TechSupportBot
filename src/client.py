@@ -49,12 +49,21 @@ async def handle_report(
         send_messages(message, username, report_type.upper(), responsdate)
     )
 
-    await message.answer_photo(
-        photo=FSInputFile("resources/header_2.png"),
-        caption=DONE_TEXT,
-        reply_markup=await back_btn(),
-        parse_mode="MarkdownV2",
-    )
+    try:
+        await message.answer_photo(
+            photo=FSInputFile("src/resources/header_2.png"),
+            caption=DONE_TEXT,
+            reply_markup=await back_btn(),
+            parse_mode="MarkdownV2",
+        )
+    except Exception as e:
+        logger.error(f"Error sending photo: {e}")
+        await message.answer(
+            text=DONE_TEXT,
+            reply_markup=await back_btn(),
+            parse_mode="MarkdownV2",
+        )
+    
     await state.clear()
 
 async def request_input(
