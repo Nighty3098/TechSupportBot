@@ -62,7 +62,8 @@ async def get_id_by_message(
     user_id: str,
     category: str,
 ) -> Optional[int]:
-    model = TABLE_MAPPING.get(category.lower())
+    category = str(category).lower()
+    model = TABLE_MAPPING.get(category)
     if not model:
         logger.error("Invalid category: %s", category)
         return None
@@ -79,9 +80,10 @@ async def get_id_by_message(
 async def update_ticket_status(
     session: AsyncSession, ticket_id: int, new_status: str, category: str
 ) -> bool:
-    model = TABLE_MAPPING.get(category.lower())
+    category = str(category).lower()
+    model = TABLE_MAPPING.get(category)
     if not model:
-        logger.error("Invalid category: %s", category)
+        logger.error(f"Invalid category: {category}")
         return False
 
     try:
@@ -93,11 +95,11 @@ async def update_ticket_status(
         result = await session.execute(query)
         await session.commit()
         logger.info(
-            "Status updated: Ticket %d, New status: %s", ticket_id, new_status
+            f"Status updated: Ticket {ticket_id}, New status: {new_status}"
         )
         return result.rowcount > 0
     except Exception as e:
-        logger.error("Status update failed: %s", str(e))
+        logger.error(f"Status update failed: {str(e)}")
         await session.rollback()
         return False
 
@@ -105,26 +107,40 @@ async def update_ticket_status(
 async def get_ticket_info(
     session: AsyncSession, ticket_id: int, category: str, field: str
 ) -> Optional[Union[str, int]]:
-    model = TABLE_MAPPING.get(category.lower())
+    category = str(category).lower()
+    model = TABLE_MAPPING.get(category)
     if not model or field not in ("user_id", "status"):
-        logger.error("Invalid parameters: %s, %s", category, field)
+        logger.error(f"Invalid parameters: category={category}, field={field}")
         return None
 
-    query = select(getattr(model, field)).where(model.id == ticket_id)
-    result = await session.execute(query)
-    return result.scalar_one_or_none()
+    try:
+        query = select(getattr(model, field)).where(model.id == ticket_id)
+        result = await session.execute(query)
+        value = result.scalar_one_or_none()
+        if value is None:
+            logger.error(f"No ticket found with id={ticket_id} in category={category}")
+        return value
+    except Exception as e:
+        logger.error(f"Error getting ticket info: {str(e)}")
+        return None
 
 
 async def get_user_id_by_message(
     session: AsyncSession, ticket_id: int, category: str
 ) -> Optional[str]:
-    return await get_ticket_info(session, ticket_id, category, "user_id")
+    user_id = await get_ticket_info(session, int(ticket_id), str(category), "user_id")
+    if user_id is None:
+        logger.error(f"Could not find user_id for ticket {ticket_id} in category {category}")
+    return user_id
 
 
 async def get_ticket_status(
     session: AsyncSession, ticket_id: int, category: str
 ) -> Optional[str]:
-    return await get_ticket_info(session, ticket_id, category, "status")
+    status = await get_ticket_info(session, int(ticket_id), str(category), "status")
+    if status is None:
+        logger.error(f"Could not find status for ticket {ticket_id} in category {category}")
+    return status
 
 
 async def get_all_tickets(session: AsyncSession) -> List[dict]:
