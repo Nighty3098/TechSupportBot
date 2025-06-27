@@ -1,4 +1,8 @@
 import bot from './bot';
 
-bot.launch();
-console.log('Bot started in polling mode'); 
+if (process.env.NODE_ENV === 'development') {
+  bot.launch();
+  console.log('Bot started in polling mode');
+} else {
+  console.log('Bot not started: use webhook mode (Vercel)');
+} 
