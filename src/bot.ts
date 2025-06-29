@@ -27,7 +27,9 @@ interface MyContext extends TelegrafContext {
 
 const bot = new Telegraf<MyContext>(BOT_TOKEN);
 
-const WELCOME_IMAGE_PATH = 'public/header.png';
+const WELCOME_IMAGE_PATH = process.env.NODE_ENV === 'development' 
+  ? 'public/header.png' 
+  : 'https://github.com/Nighty3098/TechSupportBot/blob/main/public/header.png?raw=true';
 
 const mainMenu = (ctx: MyContext) => {
   const MESSAGES = getMessages(ctx);
@@ -96,8 +98,12 @@ bot.action(/setlang_(\w+)/, async (ctx) => {
     ctx.session.lang = lang;
     await ctx.answerCbQuery('Язык изменён / Language changed');
     const MESSAGES = LANGUAGES[lang as keyof typeof LANGUAGES].messages;
+    const photoSource = process.env.NODE_ENV === 'development' 
+      ? { source: createReadStream(WELCOME_IMAGE_PATH) }
+      : { url: WELCOME_IMAGE_PATH };
+      
     await ctx.replyWithPhoto(
-      { source: createReadStream(WELCOME_IMAGE_PATH) },
+      photoSource,
       {
         caption: MESSAGES.welcomeCaption,
         ...mainMenu(ctx as MyContext),
@@ -111,8 +117,12 @@ bot.action(/setlang_(\w+)/, async (ctx) => {
 
 bot.start(async (ctx) => {
   const MESSAGES = getMessages(ctx);
+  const photoSource = process.env.NODE_ENV === 'development' 
+    ? { source: createReadStream(WELCOME_IMAGE_PATH) }
+    : { url: WELCOME_IMAGE_PATH };
+    
   await ctx.replyWithPhoto(
-    { source: createReadStream(WELCOME_IMAGE_PATH) },
+    photoSource,
     {
       caption: MESSAGES.welcomeCaption,
       ...mainMenu(ctx),
@@ -189,8 +199,13 @@ bot.on(['text', 'photo', 'video', 'document'], async (ctx) => {
 
     await ctx.reply(MESSAGES.thanks, { parse_mode: 'HTML' });
     ctx.session = { ...ctx.session, step: undefined, category: undefined };
+    
+    const photoSource = process.env.NODE_ENV === 'development' 
+      ? { source: createReadStream(WELCOME_IMAGE_PATH) }
+      : { url: WELCOME_IMAGE_PATH };
+      
     await ctx.replyWithPhoto(
-      { source: createReadStream(WELCOME_IMAGE_PATH) },
+      photoSource,
       {
         caption: MESSAGES.welcomeCaption,
         ...mainMenu(ctx),
