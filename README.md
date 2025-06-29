@@ -1,90 +1,117 @@
 # TechSupportBot
 
-TechSupportBot — это серверлес Telegram-бот для сбора баг-репортов, идей и связи с командой поддержки. Разработан на TypeScript, Telegraf и деплоится на Vercel.
+A modern, multi-language Telegram support bot for teams and projects. Supports bug reports, feature requests, development orders, and admin ticket status management. Deployable on Vercel (webhook) and locally (polling).
 
-## Возможности
-- Приветственное сообщение с картинкой и кнопками
-- Кнопки: баг-репорт, предложение идеи, заказать разработку, связаться с командой
-- Сбор информации от пользователя и отправка в чат поддержки
-- Кнопки для изменения статуса запроса и ответа пользователю
+---
 
-## Переменные окружения
-Создайте файл `.env` в корне проекта:
-```
-ADMIN_USERNAME=your_admin_username
-SUPPORT_CHAT_USERNAME=your_support_chat_username
-BOT_TOKEN=your_telegram_bot_token
-```
+## Features
+- Multi-language support (English, Russian, Japanese, Spanish, Chinese)
+- User-friendly menu with emoji and rich formatting
+- Bug report, feature request, and development order flows
+- Admin can change ticket status (in progress, closed, etc.)
+- User receives notifications when ticket status changes
+- Works on Vercel (webhook) and locally (polling)
 
-## Быстрый старт локально
-1. Установите зависимости:
+---
+
+## Quick Start (Local Development)
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Nighty3098/TechSupportBot.git
+   cd TechSupportBot
+   ```
+
+2. **Install dependencies:**
    ```bash
    npm install
    ```
-2. Запустите TypeScript компиляцию в watch-режиме:
-   ```bash
-   npx tsc --watch
-   ```
-3. Для тестирования используйте ngrok или локальный сервер для Telegram webhook.
 
-## Деплой на Vercel
-1. Зарегистрируйтесь на [Vercel](https://vercel.com/).
-2. Залейте проект на GitHub.
-3. Импортируйте репозиторий на Vercel.
-4. В настройках проекта добавьте переменные окружения из `.env`.
-5. Укажите root-эндпоинт для webhook Telegram:
-   - В настройках Telegram-бота выполните:
-     ```bash
-     curl -F "url=https://<your-vercel-domain>/api/bot" https://api.telegram.org/bot<your_telegram_bot_token>/setWebhook
+3. **Configure environment variables:**
+   - Copy `.env.example` to `.env` and fill in your values:
+     ```env
+     BOT_TOKEN=your_bot_token
+     SUPPORT_CHAT_USERNAME=your_support_username
+     NOTIFY_CHAT=your_notify_chat_id
      ```
-6. После деплоя бот будет принимать сообщения через Vercel serverless function.
 
-## Структура проекта
-- `src/bot.ts` — основной код бота
-- `api/bot.ts` — serverless endpoint для Vercel
-- `public/` — публичные файлы (например, картинки)
-
-## Лицензия
-MIT 
-
-## Интеграция с Google Sheets для хранения тикетов
-
-1. **Создайте Google Cloud Project**
-   - Перейдите на https://console.cloud.google.com/ и создайте новый проект.
-
-2. **Включите Google Sheets API**
-   - В меню "APIs & Services" выберите "Enable APIs and Services".
-   - Найдите "Google Sheets API" и включите его.
-
-3. **Создайте сервисный аккаунт**
-   - В меню "APIs & Services" выберите "Credentials".
-   - Нажмите "Create Credentials" → "Service account".
-   - Дайте имя, создайте аккаунт, роли можно не назначать.
-   - После создания выберите аккаунт, вкладка "Keys" → "Add Key" → "Create new key" → JSON.
-   - Скачайте файл, переименуйте его в `google-credentials.json` и поместите в корень проекта (или настройте путь в .env).
-
-4. **Создайте Google-таблицу**
-   - Перейдите на https://sheets.google.com/ и создайте новую таблицу.
-   - Скопируйте её ID из URL (например, https://docs.google.com/spreadsheets/d/ID_ТАБЛИЦЫ/edit).
-
-5. **Дайте сервисному аккаунту доступ к таблице**
-   - Откройте таблицу, нажмите "Поделиться".
-   - Вставьте email сервисного аккаунта (из JSON-файла) и дайте права "Редактор".
-
-6. **Добавьте переменные в .env**
-   ```
-   GOOGLE_SHEET_ID=ID_ТАБЛИЦЫ
-   GOOGLE_CREDENTIALS_PATH=google-credentials.json
-   ```
-
-7. **Структура таблицы**
-   - Первая строка: `id`, `user_id`, `username`, `date`, `category`, `status`, `message`, `attachments`, `rating`
-   - Новые тикеты будут добавляться в новые строки.
-
-8. **Установите зависимости**
+4. **Run the bot in polling mode:**
    ```bash
-   npm install googleapis
+   npm run dev
+   # or
+   npm run local
    ```
 
-9. **Готово!**
-   - Теперь тикеты будут сохраняться в Google Sheets. 
+---
+
+## Deploy to Vercel (Webhook Mode)
+
+1. **Push your code to GitHub.**
+2. **Connect your repo to Vercel.**
+3. **Set environment variables in Vercel dashboard:**
+   - `BOT_TOKEN`
+   - `SUPPORT_CHAT_USERNAME`
+   - `NOTIFY_CHAT`
+4. **Deploy!**
+5. **Set the Telegram webhook:**
+   ```
+   https://api.telegram.org/bot<YOUR_BOT_TOKEN>/setWebhook?url=https://<your-vercel-domain>/api/bot
+   ```
+
+---
+
+## Project Structure
+
+```
+TechSupportBot/
+├── api/
+│   └── bot.ts           # Vercel serverless handler (webhook)
+├── src/
+│   ├── bot.ts           # Main bot logic
+│   ├── local.ts         # Local entry point (polling)
+│   └── locales/         # All language files
+│       ├── messages.en.ts
+│       ├── messages.ru.ts
+│       ├── messages.ja.ts
+│       ├── messages.es.ts
+│       └── messages.zh.ts
+├── public/
+│   └── header.png       # (Optional) Local image for polling mode
+├── package.json
+├── vercel.json
+└── README.md
+```
+
+---
+
+## Environment Variables
+- `BOT_TOKEN` — Your Telegram bot token
+- `SUPPORT_CHAT_USERNAME` — Username for dev orders (without @)
+- `NOTIFY_CHAT` — Chat ID for notifications (can be group/channel ID)
+
+---
+
+## Usage
+- Users interact with the bot via menu buttons
+- Admins can change ticket status via inline buttons in the support chat
+- Users are notified when their ticket is in progress or closed
+- Language can be changed via the menu or `/lang` command
+
+---
+
+## Local Development Tips
+- Use polling mode for local development
+- The bot will send a welcome image only in local mode (if `public/header.png` exists)
+- All formatting uses HTML (`parse_mode: 'HTML'`)
+
+---
+
+## Vercel Deployment Tips
+- The bot works as a webhook via `api/bot.ts`
+- No image is sent in welcome messages on Vercel (text only)
+- Make sure to set the webhook after each deploy
+
+---
+
+## License
+MIT
