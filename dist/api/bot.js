@@ -17,11 +17,16 @@ const bot_1 = __importDefault(require("../src/bot"));
 function handler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         if (req.method === 'POST') {
-            yield bot_1.default.handleUpdate(req.body);
-            res.status(200).end('ok');
+            try {
+                yield bot_1.default.handleUpdate(req.body);
+                res.status(200).send('ok');
+            }
+            catch (e) {
+                res.status(500).send('Error');
+            }
         }
         else {
-            res.status(405).end();
+            res.status(200).send('Bot is running');
         }
     });
 }
