@@ -6,9 +6,9 @@
   "scripts": {
     "build": "tsc",
     "start": "npx ts-node src/local.ts",
-    "dev": "tsc --watch",
+    "dev": "NODE_ENV=development npx ts-node src/local.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "local": "npx ts-node src/local.ts"
+    "local": "NODE_ENV=development npx ts-node src/local.ts"
   },
   "repository": {
     "type": "git",

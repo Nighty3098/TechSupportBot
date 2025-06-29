@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/bot.ts": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/bot",
+      "destination": "/api/bot"
+    }
+  ]
+} 
