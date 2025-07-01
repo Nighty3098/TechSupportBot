@@ -75,7 +75,7 @@ function getUserLang(ctx: MyContext): keyof typeof LANGUAGES {
 }
 
 function getMessages(ctx: MyContext) {
-  return LANGUAGES[getUserLang(ctx) as keyof typeof LANGUAGES].messages;
+  return LANGUAGES[getUserLang(ctx)].messages;
 }
 
 bot.command("lang", async (ctx) => {
@@ -148,7 +148,7 @@ bot.action("choose_lang", async (ctx) => {
   );
 });
 
-bot.on(["text", "photo", "video", "document"], async (ctx) => {
+bot.on("message", async (ctx) => {
   if (ctx.session && ctx.session.step === "ask_message") {
     const category = ctx.session.category ?? "unknown";
     const msg = ctx.message as any;
