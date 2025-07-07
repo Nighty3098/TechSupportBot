@@ -90,7 +90,7 @@ bot.start((ctx) => __awaiter(void 0, void 0, void 0, function* () {
 bot.action('bug_report', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.session = Object.assign(Object.assign({}, ctx.session), { category: 'Баг', step: 'ask_message' });
     const MESSAGES = getMessages(ctx);
-    yield ctx.reply(MESSAGES.bugReport, { parse_mode: 'HTML' });
+    yield ctx.editMessageText(MESSAGES.bugReport, { parse_mode: 'HTML' });
 }));
 bot.action('feature_request', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.session = Object.assign(Object.assign({}, ctx.session), { category: 'Фича', step: 'ask_message' });

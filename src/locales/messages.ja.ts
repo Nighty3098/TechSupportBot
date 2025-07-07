@@ -1,30 +1,14 @@
 export const messages_ja = {
-  welcomeCaption: `👋 <b>TechSupportBotへようこそ！</b>\n\n✨ <b>サポートチームへの連絡をお手伝いします。</b>\n\n<b>下からご希望の項目を選択してください：</b>`,
-  bugReport: '🐞 <b>見つけたバグについて説明してください：</b>',
-  featureRequest: '💡 <b>アイデアを説明してください：</b>',
-  orderDev: (supportUsername: string) => `🛠 <b>開発依頼は</b> <a href="https://t.me/${supportUsername}">@${supportUsername}</a> <b>までご連絡ください。</b>`,
-  thanks: '🙏 <b>ありがとうございます！</b> ご要望は<i>サポート</i>に<b>送信されました</b>！ ��',
+  welcomeCaption: `🫠 <b><i>TechSupportBot</i>へようこそ！</b>\n\n✨ <b>サポートチームへの連絡をお手伝いします。</b>\n\n<b>下のオプションから選択してください:</b>`,
+  bugReport: '🐞 <b>発見したエラーについて説明してください。エラーに至った操作もできるだけ詳しくご記入ください。\n\nエラーログファイルや画像も添付できます。</b>',
+  featureRequest: '💡 <b>ご希望のアイデアを説明してください。\n\nファイルや画像も添付できます:</b>',
+  orderDev: (supportUsername: string) => `🛠 <b>開発依頼は、こちらまでご連絡ください:</b> <a href="https://t.me/${supportUsername}">@${supportUsername}</a>`,
+  thanks: '🙏 <b>ありがとうございます！</b> ご依頼は<i>サポート</i>に<b>送信されました</b>！🚀',
   bugButton: '🐞 バグ報告',
   featureButton: '💡 アイデアを提案',
   orderButton: '🛠 開発を依頼',
-  ticketCaption: (
-    date: string,
-    username: string,
-    category: string,
-    status: string,
-    message: string
-  ) => {
-    let caption = `📝 <b>新しいリクエスト</b>\n\n` +
-      `📅 <b>日付:</b> <i>${date}</i>\n` +
-      `👤 <b>ユーザー:</b> <a href="https://t.me/${username}">@${username}</a>\n` +
-      `📂 <b>カテゴリ:</b> <i>${category}</i>\n` +
-      `🔖 <b>ステータス:</b> <b>${status}</b>\n`;
-    if (message) {
-      caption += '💬 <b>メッセージ:</b> <i>' + message + '</i>';
-    }
-    return caption;
-  },
   langButton: '🌐 言語',
-  inProgressNotify: '⏳ <b>あなたのチケットは<i>対応中</i>です！</b> しばらくお待ちください。🚀',
-  closedNotify: '✅ <b>あなたのチケットは<i>クローズ</i>されました。</b> ご利用ありがとうございました！🎉',
-}; 
+  inProgressNotify: '⏳ <b>あなたのチケットは<i>対応中</i>です！</b> 返信をお待ちください。🚀',
+  closedNotify: '✅ <b>あなたのチケットは<i>クローズされました</i>。</b> ご連絡ありがとうございました！🎉',
+  backButton: '⬅️ 戻る'
+};
