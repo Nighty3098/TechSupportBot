@@ -9,13 +9,31 @@ import { messages_ru } from "./locales/messages.ru";
 import { messages_en } from "./locales/messages.en";
 import { messages_ja } from "./locales/messages.ja";
 import { messages_es } from "./locales/messages.es";
-import { messages_zh } from "./locales/messages.zh";
 
 config();
 
 const BOT_TOKEN = process.env.BOT_TOKEN!;
 const SUPPORT_CHAT_USERNAME = process.env.SUPPORT_CHAT_USERNAME!;
 const NOTIFY_CHAT = process.env.NOTIFY_CHAT!;
+const WELCOME_IMAGE_URL = 'https://raw.githubusercontent.com/Nighty3098/Nighty3098/refs/heads/main/Untitled.png';
+
+function ticketCaption(
+  date: string,
+  username: string,
+  category: string,
+  status: string,
+  message: string
+): string {
+  let caption = '📝 <b>New request</b>\n\n';
+  caption += `📅 <b>Date:</b> <i>${date}</i>\n`;
+  caption += `👤 <b>User:</b> <a href="https://t.me/${username}">@${username}</a>\n`;
+  caption += `📂 <b>Category:</b> <i>${category}</i>\n`;
+  caption += `🔖 <b>Status:</b> <b>${status}</b>\n`;
+  if (message) {
+    caption += '💬 <b>Message:</b> <i>' + message + '</i>';
+  }
+  return caption;
+}
 
 interface MySession {
   category?: string;
@@ -49,7 +67,6 @@ declare module "telegraf" {
   }
 }
 
-// Возможные статусы тикета
 const TICKET_STATUSES = [
   { key: "new", label: "New" },
   { key: "in_progress", label: "In development" },
@@ -66,7 +83,6 @@ const LANGUAGES = {
   en: { name: "English", messages: messages_en },
   ja: { name: "日本語", messages: messages_ja },
   es: { name: "Español", messages: messages_es },
-  zh: { name: "中文", messages: messages_zh },
 };
 
 function getUserLang(ctx: MyContext): keyof typeof LANGUAGES {
@@ -78,19 +94,6 @@ function getMessages(ctx: MyContext) {
   return LANGUAGES[getUserLang(ctx)].messages;
 }
 
-bot.command("lang", async (ctx) => {
-  await ctx.reply(
-    "Выберите язык / Choose your language / 言語を選択してください / Elige tu idioma / 请选择语言:",
-    {
-      reply_markup: {
-        inline_keyboard: Object.entries(LANGUAGES).map(([code, { name }]) => [
-          { text: name, callback_data: `setlang_${code}` },
-        ]),
-      },
-    },
-  );
-});
-
 bot.action(/setlang_(\w+)/, async (ctx) => {
   const lang = ctx.match[1];
   if (!ctx.session) ctx.session = {};
@@ -98,10 +101,14 @@ bot.action(/setlang_(\w+)/, async (ctx) => {
     ctx.session.lang = lang;
     await ctx.answerCbQuery("Язык изменён / Language changed");
     const MESSAGES = LANGUAGES[lang as keyof typeof LANGUAGES].messages;
-    await ctx.reply(MESSAGES.welcomeCaption, {
-      ...mainMenu(ctx as MyContext),
-      parse_mode: "HTML",
-    });
+    await ctx.replyWithPhoto(
+      { url: WELCOME_IMAGE_URL },
+      {
+        caption: MESSAGES.welcomeCaption,
+        ...mainMenu(ctx as MyContext),
+        parse_mode: 'HTML',
+      }
+    );
   } else {
     await ctx.answerCbQuery("Unknown language");
   }
@@ -109,47 +116,91 @@ bot.action(/setlang_(\w+)/, async (ctx) => {
 
 bot.start(async (ctx) => {
   const MESSAGES = getMessages(ctx);
-  await ctx.reply(MESSAGES.welcomeCaption, {
-    ...mainMenu(ctx),
-    parse_mode: "HTML",
+  await ctx.replyWithPhoto(
+    { url: WELCOME_IMAGE_URL },
+    {
+      caption: MESSAGES.welcomeCaption,
+      ...mainMenu(ctx),
+      parse_mode: 'HTML',
+    }
+  );
+});
+
+bot.action('to_main', async (ctx) => {
+  ctx.session.step = undefined;
+  ctx.session.category = undefined;
+  const MESSAGES = getMessages(ctx);
+  await ctx.editMessageCaption(
+    MESSAGES.welcomeCaption,
+    {
+      ...mainMenu(ctx),
+      parse_mode: 'HTML',
+    }
+  );
+});
+
+bot.action('bug_report', async (ctx) => {
+  ctx.session = { ...ctx.session, category: 'Bug', step: 'ask_message' };
+  const MESSAGES = getMessages(ctx);
+  await ctx.editMessageCaption(MESSAGES.bugReport, {
+    parse_mode: 'HTML',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: MESSAGES.backButton || MESSAGES.backButton, callback_data: 'to_main' }],
+      ],
+    },
   });
 });
 
-bot.action("bug_report", async (ctx) => {
-  ctx.session = { ...ctx.session, category: "Баг", step: "ask_message" };
+bot.action('feature_request', async (ctx) => {
+  ctx.session = { ...ctx.session, category: 'Feature', step: 'ask_message' };
   const MESSAGES = getMessages(ctx);
-  await ctx.reply(MESSAGES.bugReport, { parse_mode: "HTML" });
+  await ctx.editMessageCaption(MESSAGES.featureRequest, {
+    parse_mode: 'HTML',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: MESSAGES.backButton || MESSAGES.backButton, callback_data: 'to_main' }],
+      ],
+    },
+  });
 });
 
-bot.action("feature_request", async (ctx) => {
-  ctx.session = { ...ctx.session, category: "Фича", step: "ask_message" };
+bot.action('order_dev', async (ctx) => {
   const MESSAGES = getMessages(ctx);
-  await ctx.reply(MESSAGES.featureRequest, { parse_mode: "HTML" });
-});
-
-bot.action("order_dev", async (ctx) => {
-  const MESSAGES = getMessages(ctx);
-  await ctx.reply(MESSAGES.orderDev(SUPPORT_CHAT_USERNAME), {
-    parse_mode: "HTML",
+  await ctx.editMessageCaption(MESSAGES.orderDev(SUPPORT_CHAT_USERNAME), {
+    parse_mode: 'HTML',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: MESSAGES.backButton || MESSAGES.backButton, callback_data: 'to_main' }],
+      ],
+    },
   });
 });
 
 bot.action("choose_lang", async (ctx) => {
-  await ctx.reply(
-    "Выберите язык / Choose your language / 言語を選択してください / Elige tu idioma / 请选择语言:",
+  if (!ctx.session) ctx.session = {};
+  ctx.session.step = undefined;
+  ctx.session.category = undefined;
+  const MESSAGES = getMessages(ctx);
+  const langButtons = Object.entries(LANGUAGES).map(([code, { name }]) => [
+    { text: name, callback_data: `setlang_${code}` },
+  ]);
+  langButtons.push([
+    { text: MESSAGES.backButton || MESSAGES.backButton, callback_data: "to_main" },
+  ]);
+  await ctx.editMessageCaption(
+    "Выберите язык / Choose your language / 言語を選択してください / Elige tu idioma:",
     {
       reply_markup: {
-        inline_keyboard: Object.entries(LANGUAGES).map(([code, { name }]) => [
-          { text: name, callback_data: `setlang_${code}` },
-        ]),
+        inline_keyboard: langButtons,
       },
       parse_mode: "HTML",
     },
   );
 });
 
-bot.on("message", async (ctx) => {
-  if (ctx.session && ctx.session.step === "ask_message") {
+bot.on(['text', 'photo', 'video', 'document'], async (ctx) => {
+  if (ctx.session && ctx.session.step === 'ask_message') {
     const category = ctx.session.category ?? "unknown";
     const msg = ctx.message as any;
     const message = msg.text ?? msg.caption ?? "";
@@ -158,7 +209,7 @@ bot.on("message", async (ctx) => {
     const status = "new";
     const userId = ctx.from?.id;
     const MESSAGES = getMessages(ctx);
-    const fullCaption = MESSAGES.ticketCaption(
+    const fullCaption = ticketCaption(
       date,
       username,
       category,
@@ -171,16 +222,46 @@ bot.on("message", async (ctx) => {
       await ctx.telegram.sendPhoto(NOTIFY_CHAT, photo.file_id, {
         caption: fullCaption,
         parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: `Status: ${getStatusLabel(status)}`,
+                callback_data: `ticket_status_menu|${status}|${userId}`,
+              },
+            ],
+          ],
+        },
       });
     } else if (msg.video) {
       await ctx.telegram.sendVideo(NOTIFY_CHAT, msg.video.file_id, {
         caption: fullCaption,
         parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: `Status: ${getStatusLabel(status)}`,
+                callback_data: `ticket_status_menu|${status}|${userId}`,
+              },
+            ],
+          ],
+        },
       });
     } else if (msg.document) {
       await ctx.telegram.sendDocument(NOTIFY_CHAT, msg.document.file_id, {
         caption: fullCaption,
         parse_mode: "HTML",
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: `Status: ${getStatusLabel(status)}`,
+                callback_data: `ticket_status_menu|${status}|${userId}`,
+              },
+            ],
+          ],
+        },
       });
     } else {
       await ctx.telegram.sendMessage(NOTIFY_CHAT, fullCaption, {
@@ -188,7 +269,7 @@ bot.on("message", async (ctx) => {
           inline_keyboard: [
             [
               {
-                text: `Статус: ${getStatusLabel(status)}`,
+                text: `Status: ${getStatusLabel(status)}`,
                 callback_data: `ticket_status_menu|${status}|${userId}`,
               },
             ],
@@ -198,16 +279,19 @@ bot.on("message", async (ctx) => {
       });
     }
 
-    await ctx.reply(MESSAGES.thanks, { parse_mode: "HTML" });
+    await ctx.reply(MESSAGES.thanks, { parse_mode: 'HTML' });
     ctx.session = { ...ctx.session, step: undefined, category: undefined };
-    await ctx.reply(MESSAGES.welcomeCaption, {
-      ...mainMenu(ctx),
-      parse_mode: "HTML",
-    });
+    await ctx.replyWithPhoto(
+      { url: WELCOME_IMAGE_URL },
+      {
+        caption: MESSAGES.welcomeCaption,
+        ...mainMenu(ctx),
+        parse_mode: 'HTML',
+      }
+    );
   }
 });
 
-// Открытие меню изменения статуса
 bot.action(/ticket_status_menu\|([^|]+)\|(\d+)/, async (ctx) => {
   const currentStatus = ctx.match[1];
   const userId = ctx.match[2];
@@ -220,7 +304,7 @@ bot.action(/ticket_status_menu\|([^|]+)\|(\d+)/, async (ctx) => {
       })),
       [
         {
-          text: `Статус: ${getStatusLabel(currentStatus)}`,
+          text: `Status: ${getStatusLabel(currentStatus)}`,
           callback_data: `ticket_status_menu|${currentStatus}|${userId}`,
         },
       ],
@@ -228,29 +312,46 @@ bot.action(/ticket_status_menu\|([^|]+)\|(\d+)/, async (ctx) => {
   });
 });
 
-// Изменение статуса тикета
 bot.action(/set_ticket_status\|([^|]+)\|(\d+)/, async (ctx) => {
   const newStatus = ctx.match[1];
   const userId = ctx.match[2];
   // @ts-ignore
-  const oldText = ctx.update.callback_query.message.text as string;
-  const newText = oldText.replace(
-    /Статус: .*/,
-    `Статус: ${getStatusLabel(newStatus)}`,
-  );
-  await ctx.editMessageText(newText, {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: `Статус: ${getStatusLabel(newStatus)}`,
-            callback_data: `ticket_status_menu|${newStatus}|${userId}`,
-          },
-        ],
+  const msg = ctx.update.callback_query.message;
+  let oldText: string | undefined = undefined;
+  let oldCaption: string | undefined = undefined;
+  if (msg && 'text' in msg && typeof msg.text === 'string') {
+    oldText = msg.text;
+  }
+  if (msg && 'caption' in msg && typeof msg.caption === 'string') {
+    oldCaption = msg.caption;
+  }
+  const statusLabel = `Status: ${getStatusLabel(newStatus)}`;
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        {
+          text: statusLabel,
+          callback_data: `ticket_status_menu|${newStatus}|${userId}`,
+        },
       ],
-    },
-  });
-  // Оповещение пользователя о смене статуса
+    ],
+  };
+  if (oldText) {
+    const newText = oldText.replace(
+      /Status: .*/, statusLabel,
+    );
+    await ctx.editMessageText(newText, {
+      reply_markup,
+    });
+  } else if (oldCaption) {
+    const newCaption = oldCaption.replace(
+      /Status: .*/, statusLabel,
+    );
+    await ctx.editMessageCaption(newCaption, {
+      reply_markup,
+      parse_mode: "HTML",
+    });
+  }
   let notifyText = "";
   if (newStatus === "in_progress") {
     notifyText = LANGUAGES["en"].messages.inProgressNotify;
@@ -266,7 +367,15 @@ bot.action(/set_ticket_status\|([^|]+)\|(\d+)/, async (ctx) => {
       // ignore if user has blocked bot or can't be reached
     }
   }
-  await ctx.answerCbQuery("Статус обновлён");
+  await ctx.answerCbQuery("Status updated");
+});
+
+bot.catch((err, ctx) => {
+  console.error('Error:', err);
+  
+  if (process.env.DEVS) {
+    ctx.telegram.sendMessage(process.env.DEVS, "Error: " + err).catch(() => {});
+  }
 });
 
 export default bot;
