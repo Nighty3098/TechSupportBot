@@ -1,117 +1,99 @@
 # TechSupportBot
 
-A modern, multi-language Telegram support bot for teams and projects. Supports bug reports, feature requests, development orders, and admin ticket status management. Deployable on Vercel (webhook) and locally (polling).
-
----
+**TechSupportBot** is a Telegram bot for user support, bug reporting, idea collection, and development order requests. The bot supports multiple languages and can work both in polling mode (locally) and via webhook (e.g., on Vercel).
 
 ## Features
-- Multi-language support (English, Russian, Japanese, Spanish, Chinese)
-- User-friendly menu with emoji and rich formatting
-- Bug report, feature request, and development order flows
-- Admin can change ticket status (in progress, closed, etc.)
-- User receives notifications when ticket status changes
-- Works on Vercel (webhook) and locally (polling)
 
----
+- Accepts user requests (bug reports, feature suggestions, development orders)
+- Supports attachments: text, photos, videos, documents
+- Multilingual interface (Russian, English, Japanese, Spanish)
+- Notifies a dedicated support chat about new tickets
+- Ticket status system (new, in progress, completed, review)
+- Users can change the interface language
 
-## Quick Start (Local Development)
+## Quick Start
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Nighty3098/TechSupportBot.git
-   cd TechSupportBot
-   ```
+### 1. Clone the repository
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+```bash
+git clone https://github.com/Nighty3098/TechSupportBot.git
+cd TechSupportBot
+```
 
-3. **Configure environment variables:**
-   - Copy `.env.example` to `.env` and fill in your values:
-     ```env
-     BOT_TOKEN=your_bot_token
-     SUPPORT_CHAT_USERNAME=your_support_username
-     NOTIFY_CHAT=your_notify_chat_id
-     ```
+### 2. Install dependencies
 
-4. **Run the bot in polling mode:**
-   ```bash
-   npm run dev
-   # or
-   npm run local
-   ```
+```bash
+npm install
+```
 
----
+### 3. Configure environment variables
 
-## Deploy to Vercel (Webhook Mode)
+Create a `.env` file in the project root and specify:
 
-1. **Push your code to GitHub.**
-2. **Connect your repo to Vercel.**
-3. **Set environment variables in Vercel dashboard:**
-   - `BOT_TOKEN`
-   - `SUPPORT_CHAT_USERNAME`
-   - `NOTIFY_CHAT`
-4. **Deploy!**
-5. **Set the Telegram webhook:**
-   ```
-   https://api.telegram.org/bot<YOUR_BOT_TOKEN>/setWebhook?url=https://<your-vercel-domain>/api/bot
-   ```
+```
+BOT_TOKEN=your_bot_token
+SUPPORT_CHAT_USERNAME=support_chat_or_user
+NOTIFY_CHAT=chat_id_for_tickets
+```
 
----
+- `BOT_TOKEN` — your Telegram bot token
+- `SUPPORT_CHAT_USERNAME` — username of the support chat/user for development orders
+- `NOTIFY_CHAT` — chat ID (e.g., `-1001234567890`) where tickets will be sent
+
+### 4. Run the bot locally
+
+```bash
+npm run dev
+```
+
+The bot will start in polling mode (for development).
+
+### 5. Deploy to Vercel
+
+- Use the function from `api/bot.ts` as the webhook endpoint.
+- Set environment variables in your Vercel project settings.
+- In Telegram, set the webhook to your Vercel endpoint URL.
 
 ## Project Structure
 
-```
-TechSupportBot/
-├── api/
-│   └── bot.ts           # Vercel serverless handler (webhook)
-├── src/
-│   ├── bot.ts           # Main bot logic
-│   ├── local.ts         # Local entry point (polling)
-│   └── locales/         # All language files
-│       ├── messages.en.ts
-│       ├── messages.ru.ts
-│       ├── messages.ja.ts
-│       ├── messages.es.ts
-│       └── messages.zh.ts
-├── public/
-│   └── header.png       # (Optional) Local image for polling mode
-├── package.json
-├── vercel.json
-└── README.md
-```
+- `src/bot.ts` — main bot logic
+- `src/locales/` — language files
+- `api/bot.ts` — webhook endpoint (for Vercel)
+- `src/local.ts` — polling mode launcher for local development
 
----
+## Main Commands and Scenarios
 
-## Environment Variables
-- `BOT_TOKEN` — Your Telegram bot token
-- `SUPPORT_CHAT_USERNAME` — Username for dev orders (without @)
-- `NOTIFY_CHAT` — Chat ID for notifications (can be group/channel ID)
+- `/start` — greeting and main menu
+- Menu buttons:
+  - Bug report
+  - Suggest an idea
+  - Order development
+  - Change language
 
----
+The user selects a category, sends a message (and optionally attachments). The ticket is sent to the support chat with a status change button. When the status is changed, the user receives a notification.
 
-## Usage
-- Users interact with the bot via menu buttons
-- Admins can change ticket status via inline buttons in the support chat
-- Users are notified when their ticket is in progress or closed
-- Language can be changed via the menu or `/lang` command
+## Localization
 
----
+Supported languages:
+- Russian
+- English
+- Japanese
+- Spanish
 
-## Local Development Tips
-- Use polling mode for local development
-- The bot will send a welcome image only in local mode (if `public/header.png` exists)
-- All formatting uses HTML (`parse_mode: 'HTML'`)
+## Dependencies
 
----
+- [telegraf](https://github.com/telegraf/telegraf) — Telegram Bot API framework
+- [dotenv](https://github.com/motdotla/dotenv) — environment variables
+- [@vercel/node](https://vercel.com/docs/functions/serverless-functions/runtimes/node) — serverless functions for Vercel
+- [typescript](https://www.typescriptlang.org/)
 
-## Vercel Deployment Tips
-- The bot works as a webhook via `api/bot.ts`
-- No image is sent in welcome messages on Vercel (text only)
-- Make sure to set the webhook after each deploy
+## Scripts
 
----
+- `npm run build` — build TypeScript
+- `npm run dev` — run in development mode (polling)
+- `npm run start` — run (polling)
+- `npm run local` — run (polling)
 
 ## License
-MIT
+
+ISC
