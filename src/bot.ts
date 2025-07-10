@@ -146,7 +146,7 @@ bot.action('bug_report', async (ctx) => {
     parse_mode: 'HTML',
     reply_markup: {
       inline_keyboard: [
-        [{ text: MESSAGES.backButton || MESSAGES.backButton, callback_data: 'to_main' }],
+        [{ text: MESSAGES.backButton, callback_data: 'to_main' }],
       ],
     },
   });
@@ -159,7 +159,7 @@ bot.action('feature_request', async (ctx) => {
     parse_mode: 'HTML',
     reply_markup: {
       inline_keyboard: [
-        [{ text: MESSAGES.backButton || MESSAGES.backButton, callback_data: 'to_main' }],
+        [{ text: MESSAGES.backButton, callback_data: 'to_main' }],
       ],
     },
   });
@@ -171,7 +171,7 @@ bot.action('order_dev', async (ctx) => {
     parse_mode: 'HTML',
     reply_markup: {
       inline_keyboard: [
-        [{ text: MESSAGES.backButton || MESSAGES.backButton, callback_data: 'to_main' }],
+        [{ text: MESSAGES.backButton, callback_data: 'to_main' }],
       ],
     },
   });
@@ -186,7 +186,7 @@ bot.action("choose_lang", async (ctx) => {
     { text: name, callback_data: `setlang_${code}` },
   ]);
   langButtons.push([
-    { text: MESSAGES.backButton || MESSAGES.backButton, callback_data: "to_main" },
+    { text: MESSAGES.backButton, callback_data: "to_main" },
   ]);
   await ctx.editMessageCaption(
     "Выберите язык / Choose your language / 言語を選択してください / Elige tu idioma:",
@@ -203,9 +203,9 @@ bot.on(['text', 'photo', 'video', 'document'], async (ctx) => {
   if (ctx.session && ctx.session.step === 'ask_message') {
     const category = ctx.session.category ?? "unknown";
     const msg = ctx.message as any;
-    const message = msg.text ?? msg.caption ?? "";
+    const message = msg.text || msg.caption || "";
     const date = new Date().toLocaleString("ru-RU");
-    const username = ctx.from?.username ?? ctx.from?.first_name ?? "unknown";
+    const username = ctx.from?.username || ctx.from?.first_name || "unknown";
     const status = "new";
     const userId = ctx.from?.id;
     const MESSAGES = getMessages(ctx);
@@ -217,7 +217,7 @@ bot.on(['text', 'photo', 'video', 'document'], async (ctx) => {
       message,
     );
 
-    if (msg.photo && Array.isArray(msg.photo)) {
+    if (Array.isArray(msg.photo)) {
       const photo = msg.photo[msg.photo.length - 1];
       await ctx.telegram.sendPhoto(NOTIFY_CHAT, photo.file_id, {
         caption: fullCaption,
