@@ -199,13 +199,13 @@ bot.action("choose_lang", async (ctx) => {
   );
 });
 
-bot.on(['text', 'photo', 'video', 'document'], async (ctx) => {
+bot.on('message', async (ctx) => {
   if (ctx.session && ctx.session.step === 'ask_message') {
     const category = ctx.session.category ?? "unknown";
     const msg = ctx.message as any;
     const message = msg.text || msg.caption || "";
     const date = new Date().toLocaleString("ru-RU");
-    const username = ctx.from?.username || ctx.from?.first_name || "unknown";
+    const username = ctx.from?.username ?? ctx.from?.first_name ?? "unknown";
     const status = "new";
     const userId = ctx.from?.id;
     const MESSAGES = getMessages(ctx);
