@@ -15,22 +15,23 @@ config();
 const BOT_TOKEN = process.env.BOT_TOKEN!;
 const SUPPORT_CHAT_USERNAME = process.env.SUPPORT_CHAT_USERNAME!;
 const NOTIFY_CHAT = process.env.NOTIFY_CHAT!;
-const WELCOME_IMAGE_URL = 'https://raw.githubusercontent.com/Nighty3098/Nighty3098/refs/heads/main/Untitled.png';
+const WELCOME_IMAGE_URL =
+  "https://raw.githubusercontent.com/Nighty3098/Nighty3098/refs/heads/main/Untitled.png";
 
 function ticketCaption(
   date: string,
   username: string,
   category: string,
   status: string,
-  message: string
+  message: string,
 ): string {
-  let caption = '📝 <b>New request</b>\n\n';
+  let caption = "📝 <b>New request</b>\n\n";
   caption += `📅 <b>Date:</b> <i>${date}</i>\n`;
   caption += `👤 <b>User:</b> <a href="https://t.me/${username}">@${username}</a>\n`;
   caption += `📂 <b>Category:</b> <i>${category}</i>\n`;
   caption += `🔖 <b>Status:</b> <b>${status}</b>\n`;
   if (message) {
-    caption += '💬 <b>Message:</b> <i>' + message + '</i>';
+    caption += "💬 <b>Message:</b> <i>" + message + "</i>";
   }
   return caption;
 }
@@ -106,8 +107,8 @@ bot.action(/setlang_(\w+)/, async (ctx) => {
       {
         caption: MESSAGES.welcomeCaption,
         ...mainMenu(ctx as MyContext),
-        parse_mode: 'HTML',
-      }
+        parse_mode: "HTML",
+      },
     );
   } else {
     await ctx.answerCbQuery("Unknown language");
@@ -121,57 +122,54 @@ bot.start(async (ctx) => {
     {
       caption: MESSAGES.welcomeCaption,
       ...mainMenu(ctx),
-      parse_mode: 'HTML',
-    }
+      parse_mode: "HTML",
+    },
   );
 });
 
-bot.action('to_main', async (ctx) => {
+bot.action("to_main", async (ctx) => {
   ctx.session.step = undefined;
   ctx.session.category = undefined;
   const MESSAGES = getMessages(ctx);
-  await ctx.editMessageCaption(
-    MESSAGES.welcomeCaption,
-    {
-      ...mainMenu(ctx),
-      parse_mode: 'HTML',
-    }
-  );
+  await ctx.editMessageCaption(MESSAGES.welcomeCaption, {
+    ...mainMenu(ctx),
+    parse_mode: "HTML",
+  });
 });
 
-bot.action('bug_report', async (ctx) => {
-  ctx.session = { ...ctx.session, category: 'Bug', step: 'ask_message' };
+bot.action("bug_report", async (ctx) => {
+  ctx.session = { ...ctx.session, category: "Bug", step: "ask_message" };
   const MESSAGES = getMessages(ctx);
   await ctx.editMessageCaption(MESSAGES.bugReport, {
-    parse_mode: 'HTML',
+    parse_mode: "HTML",
     reply_markup: {
       inline_keyboard: [
-        [{ text: MESSAGES.backButton, callback_data: 'to_main' }],
+        [{ text: MESSAGES.backButton, callback_data: "to_main" }],
       ],
     },
   });
 });
 
-bot.action('feature_request', async (ctx) => {
-  ctx.session = { ...ctx.session, category: 'Feature', step: 'ask_message' };
+bot.action("feature_request", async (ctx) => {
+  ctx.session = { ...ctx.session, category: "Feature", step: "ask_message" };
   const MESSAGES = getMessages(ctx);
   await ctx.editMessageCaption(MESSAGES.featureRequest, {
-    parse_mode: 'HTML',
+    parse_mode: "HTML",
     reply_markup: {
       inline_keyboard: [
-        [{ text: MESSAGES.backButton, callback_data: 'to_main' }],
+        [{ text: MESSAGES.backButton, callback_data: "to_main" }],
       ],
     },
   });
 });
 
-bot.action('order_dev', async (ctx) => {
+bot.action("order_dev", async (ctx) => {
   const MESSAGES = getMessages(ctx);
   await ctx.editMessageCaption(MESSAGES.orderDev(SUPPORT_CHAT_USERNAME), {
-    parse_mode: 'HTML',
+    parse_mode: "HTML",
     reply_markup: {
       inline_keyboard: [
-        [{ text: MESSAGES.backButton, callback_data: 'to_main' }],
+        [{ text: MESSAGES.backButton, callback_data: "to_main" }],
       ],
     },
   });
@@ -185,9 +183,7 @@ bot.action("choose_lang", async (ctx) => {
   const langButtons = Object.entries(LANGUAGES).map(([code, { name }]) => [
     { text: name, callback_data: `setlang_${code}` },
   ]);
-  langButtons.push([
-    { text: MESSAGES.backButton, callback_data: "to_main" },
-  ]);
+  langButtons.push([{ text: MESSAGES.backButton, callback_data: "to_main" }]);
   await ctx.editMessageCaption(
     "Выберите язык / Choose your language / 言語を選択してください / Elige tu idioma:",
     {
@@ -199,8 +195,8 @@ bot.action("choose_lang", async (ctx) => {
   );
 });
 
-bot.on('message', async (ctx) => {
-  if (ctx.session && ctx.session.step === 'ask_message') {
+bot.on("message", async (ctx) => {
+  if (ctx.session && ctx.session.step === "ask_message") {
     const category = ctx.session.category ?? "unknown";
     const msg = ctx.message as any;
     const message = msg.text || msg.caption || "";
@@ -279,15 +275,15 @@ bot.on('message', async (ctx) => {
       });
     }
 
-    await ctx.reply(MESSAGES.thanks, { parse_mode: 'HTML' });
+    await ctx.reply(MESSAGES.thanks, { parse_mode: "HTML" });
     ctx.session = { ...ctx.session, step: undefined, category: undefined };
     await ctx.replyWithPhoto(
       { url: WELCOME_IMAGE_URL },
       {
         caption: MESSAGES.welcomeCaption,
         ...mainMenu(ctx),
-        parse_mode: 'HTML',
-      }
+        parse_mode: "HTML",
+      },
     );
   }
 });
@@ -319,10 +315,10 @@ bot.action(/set_ticket_status\|([^|]+)\|(\d+)/, async (ctx) => {
   const msg = ctx.update.callback_query.message;
   let oldText: string | undefined = undefined;
   let oldCaption: string | undefined = undefined;
-  if (msg && 'text' in msg && typeof msg.text === 'string') {
+  if (msg && "text" in msg && typeof msg.text === "string") {
     oldText = msg.text;
   }
-  if (msg && 'caption' in msg && typeof msg.caption === 'string') {
+  if (msg && "caption" in msg && typeof msg.caption === "string") {
     oldCaption = msg.caption;
   }
   const statusLabel = `Status: ${getStatusLabel(newStatus)}`;
@@ -337,16 +333,12 @@ bot.action(/set_ticket_status\|([^|]+)\|(\d+)/, async (ctx) => {
     ],
   };
   if (oldText) {
-    const newText = oldText.replace(
-      /Status: .*/, statusLabel,
-    );
+    const newText = oldText.replace(/Status: .*/, statusLabel);
     await ctx.editMessageText(newText, {
       reply_markup,
     });
   } else if (oldCaption) {
-    const newCaption = oldCaption.replace(
-      /Status: .*/, statusLabel,
-    );
+    const newCaption = oldCaption.replace(/Status: .*/, statusLabel);
     await ctx.editMessageCaption(newCaption, {
       reply_markup,
       parse_mode: "HTML",
@@ -371,8 +363,8 @@ bot.action(/set_ticket_status\|([^|]+)\|(\d+)/, async (ctx) => {
 });
 
 bot.catch((err, ctx) => {
-  console.error('Error:', err);
-  
+  console.error("Error:", err);
+
   if (process.env.DEVS) {
     ctx.telegram.sendMessage(process.env.DEVS, "Error: " + err).catch(() => {});
   }
