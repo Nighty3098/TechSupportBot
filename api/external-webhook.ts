@@ -35,6 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await bot.telegram.sendMessage(NOTIFY_CHAT, `External webhook:\n${message}`);
     res.status(200).json({ ok: true });
   } catch (error) {
+    console.error('Failed to send external webhook message:', error);
     res.status(500).json({ error: 'Failed to send message' });
   }
 } 
