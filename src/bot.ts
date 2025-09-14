@@ -356,7 +356,8 @@ bot.action(/set_ticket_status\|([^|]+)\|(\d+)/, async (ctx) => {
         parse_mode: "HTML",
       });
     } catch (e) {
-      // ignore if user has blocked bot or can't be reached
+      // Log the error for debugging but don't throw - user might have blocked bot
+      console.warn(`Failed to send status notification to user ${userId}:`, e);
     }
   }
   await ctx.answerCbQuery("Status updated");
