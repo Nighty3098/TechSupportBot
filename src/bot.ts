@@ -54,7 +54,6 @@ const mainMenu = (ctx: MyContext) => {
   return Markup.inlineKeyboard([
     [Markup.button.callback(MESSAGES.bugButton, "bug_report")],
     [Markup.button.callback(MESSAGES.featureButton, "feature_request")],
-    [Markup.button.callback(MESSAGES.orderButton, "order_dev")],
     [Markup.button.callback(MESSAGES.langButton, "choose_lang")],
   ]);
 };
