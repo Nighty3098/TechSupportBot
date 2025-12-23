@@ -16,7 +16,7 @@ const BOT_TOKEN = process.env.BOT_TOKEN!;
 const SUPPORT_CHAT_USERNAME = process.env.SUPPORT_CHAT_USERNAME!;
 const NOTIFY_CHAT = process.env.NOTIFY_CHAT!;
 const WELCOME_IMAGE_URL =
-  "https://github.com/Nighty3098/Nighty3098/blob/main/w.jpeg?raw=true";
+  "https://github.com/Nighty3098/Nighty3098/blob/main/q.jpeg?raw=true";
 
 function ticketCaption(
   date: string,
