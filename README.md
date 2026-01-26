@@ -4,6 +4,23 @@
 
 A Telegram bot for technical support and bug tracking system.
 
+<div align="center">
+
+<img src="imgs/1.png" width="45%"/>
+<img src="imgs/2.png" width="45%"/>
+<img src="imgs/3.png" width="45%"/>
+<img src="imgs/7.png" width="45%"/>
+<br />
+<img src="imgs/4.png" width="90%"/>
+<br />
+<img src="imgs/5.png" width="90%"/>
+<br />
+<img src="imgs/6.png" width="90%"/>
+<br />
+<img src="imgs/8.png" width="55%"/>
+
+</div>
+
 ## Features
 
 ### User Features
